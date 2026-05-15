@@ -48,14 +48,14 @@ export function UserMenu({ email }: UserMenuProps) {
   }
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative min-w-0" ref={menuRef}>
       <Button
         type="button"
         variant="outline"
         onClick={() => setOpen((current) => !current)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="h-11 max-w-52 bg-white sm:h-8"
+        className="h-11 w-full justify-between bg-white/90 sm:max-w-52"
         style={{ color: '#032147', borderColor: '#ecad0a' }}
       >
         <User className="w-4 h-4" style={{ color: '#209dd7' }} />
@@ -66,7 +66,7 @@ export function UserMenu({ email }: UserMenuProps) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-lg border border-border bg-white py-2 text-sm shadow-lg"
+          className="absolute right-0 z-50 mt-2 w-[min(16rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-white py-2 text-sm shadow-lg"
         >
           <div className="border-b border-gray-100 px-3 pb-2">
             <p className="text-xs font-medium uppercase" style={{ color: '#888888' }}>

@@ -76,21 +76,21 @@ export function AccountSettings({ email, displayName }: AccountSettingsProps) {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200 bg-white px-6 py-5">
-        <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
+    <main className="apple-surface min-h-screen">
+      <header className="border-b border-white/70 bg-white/80 px-4 py-5 shadow-sm backdrop-blur-xl sm:px-6">
+        <div className="mx-auto flex max-w-4xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#032147' }}>
+            <h1 className="text-3xl font-semibold tracking-tight" style={{ color: '#032147' }}>
               Account Settings
             </h1>
             <p className="text-sm" style={{ color: '#888888' }}>
               Manage your profile and password.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:items-center">
             <Link
               href="/dashboard"
-              className="inline-flex h-8 items-center justify-center rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium hover:bg-gray-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-white/85 px-3 text-sm font-semibold shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#209dd7]/50 hover:bg-white hover:shadow-md"
               style={{ color: '#032147' }}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -101,10 +101,10 @@ export function AccountSettings({ email, displayName }: AccountSettingsProps) {
         </div>
       </header>
 
-      <section className="mx-auto max-w-4xl space-y-5 px-6 py-8">
+      <section className="mx-auto max-w-4xl space-y-5 px-4 py-8 sm:px-6">
         {(message || error) && (
           <div
-            className="rounded-lg border bg-white p-3 text-sm"
+            className="rounded-2xl border bg-white/90 p-3 text-sm shadow-sm"
             style={{
               borderColor: error ? '#fecaca' : '#bbf7d0',
               color: error ? '#dc2626' : '#16a34a',
@@ -114,7 +114,7 @@ export function AccountSettings({ email, displayName }: AccountSettingsProps) {
           </div>
         )}
 
-        <Card className="rounded-lg">
+        <Card className="tactile-card border-white/75 bg-white/90 ring-white/80">
           <CardHeader>
             <CardTitle style={{ color: '#032147' }}>Profile</CardTitle>
             <CardDescription>Set the name shown on your account.</CardDescription>
@@ -143,7 +143,7 @@ export function AccountSettings({ email, displayName }: AccountSettingsProps) {
           </CardContent>
         </Card>
 
-        <Card className="rounded-lg">
+        <Card className="tactile-card border-white/75 bg-white/90 ring-white/80">
           <CardHeader>
             <CardTitle style={{ color: '#032147' }}>Password</CardTitle>
             <CardDescription>Change the password for email/password sign-ins.</CardDescription>

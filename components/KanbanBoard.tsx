@@ -7,6 +7,7 @@ import {
   closestCorners,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -69,6 +70,9 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 180, tolerance: 8 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
@@ -285,7 +289,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
   }
 
   if (loading) {
-    return <div className="apple-surface flex h-screen items-center justify-center font-medium" style={{ color: '#888888' }}>Loading...</div>
+    return <div className="apple-surface flex h-dvh items-center justify-center font-medium" style={{ color: '#888888' }}>Loading...</div>
   }
 
   if (!board) {
@@ -300,7 +304,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
           </p>
           <Link
             href="/dashboard"
-            className="mt-5 inline-flex h-8 items-center justify-center rounded-lg px-2.5 text-sm font-medium text-white"
+            className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl px-3 text-sm font-semibold text-white"
             style={{ backgroundColor: '#753991' }}
           >
             Back to Dashboard
@@ -311,7 +315,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
   }
 
   return (
-    <div className="apple-surface flex h-screen flex-col">
+    <div className="apple-surface flex h-dvh flex-col overflow-hidden">
       <header className="border-b border-white/70 bg-white/80 px-4 py-5 shadow-sm backdrop-blur-xl sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="min-w-0 truncate text-3xl font-semibold tracking-tight" style={{ color: '#032147' }}>
@@ -356,7 +360,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
         onDragEnd={handleDragEnd}
         onDragCancel={() => setActiveCard(null)}
       >
-        <div className="flex-1 overflow-x-auto overscroll-x-contain px-3 py-5 sm:px-6 sm:py-7">
+        <div className="flex-1 touch-pan-x overflow-x-auto overscroll-x-contain px-3 py-5 sm:px-6 sm:py-7">
           <SortableContext
             items={columns.map((column) => column.id)}
             strategy={horizontalListSortingStrategy}
