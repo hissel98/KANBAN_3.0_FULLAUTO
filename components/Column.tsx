@@ -56,9 +56,9 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
     <div
       ref={setNodeRef}
       style={style}
-      className="flex-shrink-0 w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col"
+      className="flex w-80 flex-shrink-0 flex-col rounded-xl border border-border/80 bg-white/70 shadow-sm backdrop-blur transition-all duration-200 hover:shadow-md"
     >
-      <div className="p-4 border-b border-gray-200 bg-white rounded-t-lg">
+      <div className="rounded-t-xl border-b border-border/80 bg-white/90 p-4">
         {isEditing ? (
           <div className="flex items-center gap-2">
             <Input
@@ -84,14 +84,14 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
               <Button
                 size="icon-sm"
                 variant="ghost"
-                className="h-7 w-7 cursor-grab active:cursor-grabbing"
+                className="h-8 w-8 cursor-grab active:cursor-grabbing"
                 aria-label={`Reorder ${column.title}`}
                 {...attributes}
                 {...listeners}
               >
                 <GripVertical className="w-4 h-4" style={{ color: '#888888' }} />
               </Button>
-              <h3 className="truncate font-semibold" style={{ color: '#032147' }}>
+              <h3 className="truncate font-semibold tracking-tight" style={{ color: '#032147' }}>
                 {column.title}
               </h3>
             </div>

@@ -46,7 +46,7 @@ export function Card({ card, onEdit, onDelete }: CardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="mb-3 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow"
+      className="mb-3 cursor-grab border-white/70 bg-white/95 shadow-sm transition-all duration-200 active:cursor-grabbing hover:-translate-y-0.5 hover:shadow-md"
     >
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-2">

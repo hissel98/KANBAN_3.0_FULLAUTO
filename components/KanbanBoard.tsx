@@ -259,7 +259,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
 
   if (!board) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-6">
+      <div className="apple-surface flex min-h-screen items-center justify-center p-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold" style={{ color: '#032147' }}>
             Board not found
@@ -280,16 +280,16 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold" style={{ color: '#032147' }}>
+    <div className="apple-surface flex h-screen flex-col">
+      <header className="border-b border-border/80 bg-white/85 px-4 py-4 backdrop-blur sm:px-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="min-w-0 truncate text-2xl font-semibold tracking-tight" style={{ color: '#032147' }}>
             {board?.title || 'My Project'}
           </h1>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/dashboard"
-              className="inline-flex h-8 items-center justify-center rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium hover:bg-gray-50"
+              className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-white px-2.5 text-sm font-medium transition-all hover:border-[#209dd7]/50 hover:bg-muted"
               style={{ color: '#032147' }}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -298,8 +298,8 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
             <Button
               onClick={() => handleAddCard(columns[0]?.id)}
               disabled={!columns[0]}
-              style={{ backgroundColor: '#753991' }}
-              className="text-white hover:opacity-90"
+              style={{ backgroundColor: '#209dd7' }}
+              className="text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Card
@@ -307,7 +307,8 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
             <Button
               onClick={() => setColumnModalOpen(true)}
               variant="outline"
-              style={{ color: '#209dd7', borderColor: '#209dd7' }}
+              className="bg-white transition-all hover:-translate-y-0.5 hover:shadow-sm"
+              style={{ color: '#753991', borderColor: '#753991' }}
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Column
@@ -328,7 +329,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
             items={columns.map((column) => column.id)}
             strategy={horizontalListSortingStrategy}
           >
-            <div className="flex gap-6 h-full">
+            <div className="flex h-full gap-6">
             {columns.map((column) => (
               <ColumnComponent
                 key={column.id}
@@ -390,7 +391,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
               onClick={handleAddColumn}
               disabled={!columnTitle.trim() || savingColumn}
               className="text-white"
-              style={{ backgroundColor: '#753991' }}
+              style={{ backgroundColor: '#209dd7' }}
             >
               {savingColumn ? 'Saving...' : 'Create'}
             </Button>

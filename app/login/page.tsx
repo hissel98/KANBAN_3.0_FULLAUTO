@@ -84,10 +84,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <Card className="w-full max-w-md">
+    <div className="apple-surface flex min-h-screen items-center justify-center px-4 py-10">
+      <Card className="w-full max-w-md border-white/70 bg-white/95 shadow-[0_24px_80px_rgb(3_33_71/0.12)] backdrop-blur transition-all duration-300 hover:shadow-[0_28px_90px_rgb(3_33_71/0.16)]">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl" style={{ color: '#032147' }}>
+          <div className="mx-auto mb-2 h-2 w-14 rounded-full" style={{ backgroundColor: '#ecad0a' }} />
+          <CardTitle className="text-2xl font-semibold tracking-tight" style={{ color: '#032147' }}>
             Project Management
           </CardTitle>
           <CardDescription style={{ color: '#888888' }}>
@@ -106,6 +107,7 @@ export default function LoginPage() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="h-11 bg-white"
                 required
               />
             </div>
@@ -116,9 +118,10 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="h-11 bg-white"
                 required
               />
             </div>
@@ -141,7 +144,7 @@ export default function LoginPage() {
                 onClick={handleGoogleSignIn}
                 disabled={loading}
                 variant="outline"
-                className="w-full"
+                className="h-11 w-full bg-white transition-all hover:-translate-y-0.5 hover:shadow-sm"
                 style={{ color: '#032147', borderColor: '#ecad0a' }}
               >
                 Sign in with Google
@@ -150,8 +153,8 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full text-white"
-                style={{ backgroundColor: '#753991' }}
+                className="h-11 w-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md"
+                style={{ backgroundColor: '#209dd7' }}
               >
                 {loading ? 'Signing in...' : 'Sign In'}
               </Button>
@@ -160,8 +163,8 @@ export default function LoginPage() {
                 onClick={handleSignUp}
                 disabled={loading}
                 variant="outline"
-                className="w-full"
-                style={{ color: '#209dd7', borderColor: '#209dd7' }}
+                className="h-11 w-full bg-white transition-all hover:-translate-y-0.5 hover:shadow-sm"
+                style={{ color: '#753991', borderColor: '#753991' }}
               >
                 Sign Up
               </Button>

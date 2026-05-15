@@ -85,11 +85,11 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200 bg-white px-6 py-5">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
+    <main className="apple-surface min-h-screen">
+      <header className="border-b border-border/80 bg-white/85 px-4 py-4 backdrop-blur sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#032147' }}>
+            <h1 className="text-2xl font-semibold tracking-tight" style={{ color: '#032147' }}>
               Boards
             </h1>
             <p className="text-sm" style={{ color: '#888888' }}>
@@ -99,8 +99,8 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
           <div className="flex items-center gap-2">
             <Button
               onClick={openCreateModal}
-              className="text-white"
-              style={{ backgroundColor: '#753991' }}
+              className="text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+              style={{ backgroundColor: '#209dd7' }}
             >
               <Plus className="w-4 h-4 mr-2" />
               Create Board
@@ -110,13 +110,13 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-6 py-8">
+      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         {loading ? (
           <div className="py-20 text-center" style={{ color: '#888888' }}>
             Loading boards...
           </div>
         ) : boards.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center">
+          <div className="rounded-xl border border-dashed border-border bg-white/90 p-10 text-center shadow-sm">
             <h2 className="text-lg font-semibold" style={{ color: '#032147' }}>
               No boards yet
             </h2>
@@ -125,8 +125,8 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
             </p>
             <Button
               onClick={openCreateModal}
-              className="mt-5 text-white"
-              style={{ backgroundColor: '#753991' }}
+              className="mt-5 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+              style={{ backgroundColor: '#209dd7' }}
             >
               <Plus className="w-4 h-4 mr-2" />
               Create Board
@@ -135,7 +135,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {boards.map((board) => (
-              <Card key={board.id} className="rounded-lg">
+              <Card key={board.id} className="rounded-xl border-white/70 bg-white/95 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
                 <CardHeader>
                   <CardTitle style={{ color: '#032147' }}>
                     <Link className="hover:underline" href={`/board/${board.id}`}>
@@ -168,7 +168,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
                 <CardContent>
                   <Link
                     href={`/board/${board.id}`}
-                    className="inline-flex h-8 w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium hover:bg-gray-50"
+                    className="inline-flex h-9 w-full items-center justify-center rounded-lg border border-border bg-white px-2.5 text-sm font-medium transition-all hover:border-[#209dd7]/50 hover:bg-muted"
                     style={{ color: '#032147' }}
                   >
                     Open Board
@@ -210,7 +210,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
               onClick={handleSave}
               disabled={!title.trim() || saving}
               className="text-white"
-              style={{ backgroundColor: '#753991' }}
+              style={{ backgroundColor: '#209dd7' }}
             >
               {saving ? 'Saving...' : editingBoard ? 'Rename' : 'Create'}
             </Button>
