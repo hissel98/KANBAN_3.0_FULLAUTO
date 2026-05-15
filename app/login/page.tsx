@@ -85,18 +85,18 @@ export default function LoginPage() {
 
   return (
     <div className="apple-surface flex min-h-screen items-center justify-center px-4 py-10">
-      <Card className="w-full max-w-md border-white/70 bg-white/95 shadow-[0_24px_80px_rgb(3_33_71/0.12)] backdrop-blur transition-all duration-300 hover:shadow-[0_28px_90px_rgb(3_33_71/0.16)]">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-2 h-2 w-14 rounded-full" style={{ backgroundColor: '#ecad0a' }} />
-          <CardTitle className="text-2xl font-semibold tracking-tight" style={{ color: '#032147' }}>
+      <Card className="glass-panel w-full max-w-md border-white/75 bg-white/90 p-1 shadow-[0_30px_100px_rgb(3_33_71/0.16)] ring-white/70 transition-all duration-300 hover:shadow-[0_34px_110px_rgb(3_33_71/0.2)]">
+        <CardHeader className="px-6 pt-7 text-center">
+          <div className="mx-auto mb-3 h-2 w-16 rounded-full shadow-[0_8px_24px_rgb(236_173_10/0.35)]" style={{ backgroundColor: '#ecad0a' }} />
+          <CardTitle className="text-3xl font-semibold tracking-tight" style={{ color: '#032147' }}>
             Project Management
           </CardTitle>
-          <CardDescription style={{ color: '#888888' }}>
+          <CardDescription className="text-[0.95rem] leading-6" style={{ color: '#888888' }}>
             Sign in to access your Kanban board
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form className="space-y-4">
+        <CardContent className="px-6 pb-6">
+          <form className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email" style={{ color: '#032147' }}>
                 Email
@@ -107,7 +107,7 @@ export default function LoginPage() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-11 bg-white"
+                className="h-12 bg-white/90"
                 required
               />
             </div>
@@ -121,19 +121,19 @@ export default function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-11 bg-white"
+                className="h-12 bg-white/90"
                 required
               />
             </div>
 
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded text-sm" style={{ color: '#dc2626' }}>
+              <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm" style={{ color: '#dc2626' }}>
                 {error}
               </div>
             )}
 
             {message && (
-              <div className="p-3 bg-green-50 border border-green-200 rounded text-sm" style={{ color: '#16a34a' }}>
+              <div className="rounded-xl border border-green-200 bg-green-50 p-3 text-sm" style={{ color: '#16a34a' }}>
                 {message}
               </div>
             )}
@@ -144,7 +144,7 @@ export default function LoginPage() {
                 onClick={handleGoogleSignIn}
                 disabled={loading}
                 variant="outline"
-                className="h-11 w-full bg-white transition-all hover:-translate-y-0.5 hover:shadow-sm"
+                className="h-12 w-full bg-white/90 transition-all hover:-translate-y-0.5 hover:shadow-md"
                 style={{ color: '#032147', borderColor: '#ecad0a' }}
               >
                 Sign in with Google
@@ -153,7 +153,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleLogin}
                 disabled={loading}
-                className="h-11 w-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md"
+                className="h-12 w-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md"
                 style={{ backgroundColor: '#209dd7' }}
               >
                 {loading ? 'Signing in...' : 'Sign In'}
@@ -163,7 +163,7 @@ export default function LoginPage() {
                 onClick={handleSignUp}
                 disabled={loading}
                 variant="outline"
-                className="h-11 w-full bg-white transition-all hover:-translate-y-0.5 hover:shadow-sm"
+                className="h-12 w-full bg-white/90 transition-all hover:-translate-y-0.5 hover:shadow-md"
                 style={{ color: '#753991', borderColor: '#753991' }}
               >
                 Sign Up

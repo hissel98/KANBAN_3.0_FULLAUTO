@@ -86,10 +86,10 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
 
   return (
     <main className="apple-surface min-h-screen">
-      <header className="border-b border-border/80 bg-white/85 px-4 py-4 backdrop-blur sm:px-6">
+      <header className="border-b border-white/70 bg-white/80 px-4 py-5 shadow-sm backdrop-blur-xl sm:px-6">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight" style={{ color: '#032147' }}>
+            <h1 className="text-3xl font-semibold tracking-tight" style={{ color: '#032147' }}>
               Boards
             </h1>
             <p className="text-sm" style={{ color: '#888888' }}>
@@ -110,13 +110,13 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         {loading ? (
           <div className="py-20 text-center" style={{ color: '#888888' }}>
             Loading boards...
           </div>
         ) : boards.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border bg-white/90 p-10 text-center shadow-sm">
+          <div className="glass-panel rounded-2xl border border-dashed border-white/80 p-10 text-center">
             <h2 className="text-lg font-semibold" style={{ color: '#032147' }}>
               No boards yet
             </h2>
@@ -135,14 +135,14 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {boards.map((board) => (
-              <Card key={board.id} className="rounded-xl border-white/70 bg-white/95 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+              <Card key={board.id} className="tactile-card border-white/75 bg-white/90 ring-white/80">
                 <CardHeader>
-                  <CardTitle style={{ color: '#032147' }}>
+                  <CardTitle className="pr-2 text-lg" style={{ color: '#032147' }}>
                     <Link className="hover:underline" href={`/board/${board.id}`}>
                       {board.title}
                     </Link>
                   </CardTitle>
-                  <CardDescription className="flex items-center gap-2">
+                  <CardDescription className="flex items-center gap-2 leading-5">
                     <CalendarDays className="h-4 w-4" />
                     Created {new Date(board.created_at).toLocaleDateString()}
                   </CardDescription>
@@ -170,7 +170,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
                 <CardContent>
                   <Link
                     href={`/board/${board.id}`}
-                    className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-border bg-white px-2.5 text-sm font-medium transition-all hover:border-[#209dd7]/50 hover:bg-muted sm:h-9"
+                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-border bg-white/85 px-3 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-[#209dd7]/50 hover:bg-white hover:shadow-md sm:h-10"
                     style={{ color: '#032147' }}
                   >
                     Open Board

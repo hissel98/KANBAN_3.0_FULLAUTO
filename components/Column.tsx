@@ -57,9 +57,9 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
     <div
       ref={setNodeRef}
       style={style}
-      className="flex w-[min(84vw,20rem)] flex-shrink-0 flex-col rounded-xl border border-border/80 bg-white/70 shadow-sm backdrop-blur transition-all duration-200 hover:shadow-md sm:w-80"
+      className="flex w-[min(84vw,20rem)] flex-shrink-0 flex-col overflow-hidden rounded-2xl border border-white/75 bg-white/72 shadow-[0_18px_48px_rgb(3_33_71/0.08)] backdrop-blur-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_64px_rgb(3_33_71/0.13)] sm:w-80"
     >
-      <div className="rounded-t-xl border-b border-border/80 bg-white/90 p-4">
+      <div className="border-b border-white/75 bg-white/80 p-4">
         {isEditing ? (
           <div className="flex items-center gap-2">
             <Input
@@ -96,6 +96,9 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
                 {column.title}
               </h3>
             </div>
+            <span className="mr-1 rounded-full bg-[#209dd7]/10 px-2 py-0.5 text-xs font-semibold" style={{ color: '#209dd7' }}>
+              {column.cards.length}
+            </span>
             <div className="flex items-center gap-1">
               <Button
                 size="icon"
@@ -130,7 +133,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
         items={column.cards.map((c) => c.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="min-h-[200px] flex-1 overflow-y-auto p-3">
+        <div className="min-h-[200px] flex-1 overflow-y-auto bg-white/30 p-3">
           {column.cards.map((card) => (
             <CardComponent
               key={card.id}

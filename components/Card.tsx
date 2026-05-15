@@ -48,12 +48,12 @@ export function Card({ card, onEdit, onDelete }: CardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="mb-3 cursor-grab border-white/70 bg-white/95 shadow-sm transition-all duration-200 active:cursor-grabbing hover:-translate-y-0.5 hover:shadow-md"
+      className="mb-3 cursor-grab border-white/80 bg-white/95 shadow-[0_10px_26px_rgb(3_33_71/0.07)] ring-white/80 transition-all duration-200 active:cursor-grabbing hover:-translate-y-1 hover:shadow-[0_16px_38px_rgb(3_33_71/0.12)]"
     >
-      <CardContent className="p-3 sm:p-4">
+      <CardContent className="p-3.5 sm:p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h4 className="break-words text-sm font-medium leading-5" style={{ color: '#032147' }}>
+            <h4 className="break-words text-sm font-semibold leading-5 tracking-tight" style={{ color: '#032147' }}>
               {card.title}
             </h4>
             {card.description && (

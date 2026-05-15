@@ -49,9 +49,9 @@
 }
 
 :root {
-  --background: #f7f8fb;
+  --background: #f5f7fb;
   --foreground: #032147;
-  --card: oklch(1 0 0);
+  --card: #ffffff;
   --card-foreground: #032147;
   --popover: oklch(1 0 0);
   --popover-foreground: #032147;
@@ -59,13 +59,13 @@
   --primary-foreground: #ffffff;
   --secondary: #753991;
   --secondary-foreground: #ffffff;
-  --muted: #f1f4f8;
+  --muted: #f0f4f9;
   --muted-foreground: #888888;
   --accent: #ecad0a;
   --accent-foreground: #032147;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #e4e8ef;
-  --input: #d9e0ea;
+  --border: #e3e9f1;
+  --input: #d8e1ec;
   --ring: #209dd7;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
@@ -137,13 +137,33 @@
   --dark-navy: #032147;
   --gray-text: #888888;
   --surface-soft: #f7f8fb;
+  --shadow-soft: 0 18px 55px rgb(3 33 71 / 0.08);
+  --shadow-lift: 0 24px 70px rgb(3 33 71 / 0.14);
+  --shadow-button: 0 10px 26px rgb(32 157 215 / 0.24);
 }
 
 @layer utilities {
   .apple-surface {
     background:
-      radial-gradient(circle at top left, rgb(236 173 10 / 0.08), transparent 26rem),
-      linear-gradient(180deg, #ffffff 0%, var(--surface-soft) 100%);
+      radial-gradient(circle at 12% 0%, rgb(32 157 215 / 0.12), transparent 23rem),
+      radial-gradient(circle at 88% 8%, rgb(236 173 10 / 0.12), transparent 22rem),
+      linear-gradient(180deg, #ffffff 0%, var(--surface-soft) 46%, #eef3f9 100%);
+  }
+
+  .glass-panel {
+    background: rgb(255 255 255 / 0.82);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(22px) saturate(160%);
+  }
+
+  .tactile-card {
+    box-shadow: 0 1px 1px rgb(3 33 71 / 0.03), 0 14px 36px rgb(3 33 71 / 0.08);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+
+  .tactile-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
   }
 }
 
