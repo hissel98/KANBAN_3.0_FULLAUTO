@@ -118,6 +118,23 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
     }
   }
 
+  const reindexCards = (cards: Card[]) =>
+    cards.map((card, index) => ({
+      ...card,
+      position: index,
+    }))
+
+  const persistCards = async (cards: Card[]) => {
+    await Promise.all(
+      cards.map((card) =>
+        updateCard(card.id, {
+          column_id: card.column_id,
+          position: card.position,
+        })
+      )
+    )
+  }
+
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
     setActiveCard(null)
@@ -158,10 +175,12 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
 
     if (activeColumn.id === overColumn.id) {
       const activeIndex = activeColumn.cards.findIndex(c => c.id === activeId)
-      const overIndex = overColumn.cards.findIndex(c => c.id === overId)
+      const overIndex = overId === overColumn.id
+        ? activeColumn.cards.length - 1
+        : overColumn.cards.findIndex(c => c.id === overId)
       
-      if (activeIndex !== overIndex) {
-        const newCards = arrayMove(activeColumn.cards, activeIndex, overIndex)
+      if (activeIndex !== overIndex && overIndex >= 0) {
+        const newCards = reindexCards(arrayMove(activeColumn.cards, activeIndex, overIndex))
         
         setColumns(prev => prev.map(col => {
           if (col.id === activeColumn.id) {
@@ -170,28 +189,40 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
           return col
         }))
 
-        await updateCard(activeId, { position: overIndex })
+        try {
+          await persistCards(newCards)
+        } catch (error) {
+          console.error('Error reordering cards:', error)
+          await loadData()
+        }
       }
     } else {
       const overIndex = overId === overColumn.id 
         ? overColumn.cards.length 
         : overColumn.cards.findIndex(c => c.id === overId)
 
-      const newActiveCards = activeColumn.cards.filter(c => c.id !== activeId)
+      const destinationIndex = overIndex >= 0 ? overIndex : overColumn.cards.length
+      const newActiveCards = reindexCards(activeColumn.cards.filter(c => c.id !== activeId))
       const newOverCards = [...overColumn.cards]
-      newOverCards.splice(overIndex, 0, { ...activeCard, column_id: overColumn.id })
+      newOverCards.splice(destinationIndex, 0, { ...activeCard, column_id: overColumn.id })
+      const reindexedOverCards = reindexCards(newOverCards)
 
       setColumns(prev => prev.map(col => {
         if (col.id === activeColumn.id) {
           return { ...col, cards: newActiveCards }
         }
         if (col.id === overColumn.id) {
-          return { ...col, cards: newOverCards }
+          return { ...col, cards: reindexedOverCards }
         }
         return col
       }))
 
-      await updateCard(activeId, { column_id: overColumn.id, position: overIndex })
+      try {
+        await persistCards([...newActiveCards, ...reindexedOverCards])
+      } catch (error) {
+        console.error('Error moving card:', error)
+        await loadData()
+      }
     }
   }
 
@@ -323,6 +354,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
         collisionDetection={closestCorners}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        onDragCancel={() => setActiveCard(null)}
       >
         <div className="flex-1 overflow-x-auto overscroll-x-contain px-3 py-4 sm:px-6 sm:py-6">
           <SortableContext

@@ -1,5 +1,6 @@
 'use client'
 
+import type { CSSProperties } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Card as CardType } from '@/types'
@@ -27,10 +28,11 @@ export function Card({ card, onEdit, onDelete }: CardProps) {
     data: { type: 'Card', card },
   })
 
-  const style = {
+  const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+    touchAction: 'none',
   }
 
   const handleDelete = async () => {

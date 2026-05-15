@@ -1,5 +1,6 @@
 'use client'
 
+import type { CSSProperties } from 'react'
 import { useState } from 'react'
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -34,7 +35,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
     data: { type: 'Column', column },
   })
 
-  const style = {
+  const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.6 : 1,
