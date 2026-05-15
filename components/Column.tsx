@@ -7,7 +7,7 @@ import { ColumnWithCards, Card } from '@/types'
 import { Card as CardComponent } from './Card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Plus, Edit2, Check, X } from 'lucide-react'
+import { Plus, Edit2, Check, X, GripVertical, Trash2 } from 'lucide-react'
 import { updateColumn } from '@/lib/supabase'
 
 interface ColumnProps {
@@ -15,16 +15,30 @@ interface ColumnProps {
   onAddCard: (columnId: string) => void
   onEditCard: (card: Card) => void
   onCardsChanged: () => void
+  onDeleteColumn: (columnId: string) => void
 }
 
-export function Column({ column, onAddCard, onEditCard, onCardsChanged }: ColumnProps) {
+export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDeleteColumn }: ColumnProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(column.title)
 
-  const { setNodeRef } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: column.id,
     data: { type: 'Column', column },
   })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  }
 
   const handleSaveTitle = async () => {
     if (title.trim() && title !== column.title) {
@@ -41,6 +55,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged }: Column
   return (
     <div
       ref={setNodeRef}
+      style={style}
       className="flex-shrink-0 w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col"
     >
       <div className="p-4 border-b border-gray-200 bg-white rounded-t-lg">
@@ -65,9 +80,21 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged }: Column
           </div>
         ) : (
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold" style={{ color: '#032147' }}>
-              {column.title}
-            </h3>
+            <div className="flex min-w-0 items-center gap-2">
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                className="h-7 w-7 cursor-grab active:cursor-grabbing"
+                aria-label={`Reorder ${column.title}`}
+                {...attributes}
+                {...listeners}
+              >
+                <GripVertical className="w-4 h-4" style={{ color: '#888888' }} />
+              </Button>
+              <h3 className="truncate font-semibold" style={{ color: '#032147' }}>
+                {column.title}
+              </h3>
+            </div>
             <div className="flex items-center gap-1">
               <Button
                 size="icon"
@@ -84,6 +111,14 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged }: Column
                 className="h-8 w-8"
               >
                 <Plus className="w-4 h-4" style={{ color: '#753991' }} />
+              </Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => onDeleteColumn(column.id)}
+                className="h-8 w-8"
+              >
+                <Trash2 className="w-4 h-4" style={{ color: '#888888' }} />
               </Button>
             </div>
           </div>

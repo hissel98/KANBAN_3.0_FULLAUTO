@@ -14,8 +14,23 @@ import {
   defaultDropAnimationSideEffects,
   DropAnimation,
 } from '@dnd-kit/core'
-import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { getBoard, getBoardById, createBoard, getColumns, getCards, updateCard } from '@/lib/supabase'
+import {
+  arrayMove,
+  horizontalListSortingStrategy,
+  SortableContext,
+  sortableKeyboardCoordinates,
+} from '@dnd-kit/sortable'
+import {
+  createBoard,
+  createColumn,
+  deleteColumn,
+  getBoard,
+  getBoardById,
+  getCards,
+  getColumns,
+  updateCard,
+  updateColumn,
+} from '@/lib/supabase'
 import { Board, Column, Card, ColumnWithCards } from '@/types'
 import { Column as ColumnComponent } from './Column'
 import { Card as CardComponent } from './Card'
@@ -23,6 +38,14 @@ import { CardModal } from './CardModal'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Plus } from 'lucide-react'
 import Link from 'next/link'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 interface KanbanBoardProps {
   userId: string
@@ -37,6 +60,9 @@ export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const [editingCard, setEditingCard] = useState<Card | null>(null)
   const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null)
+  const [columnModalOpen, setColumnModalOpen] = useState(false)
+  const [columnTitle, setColumnTitle] = useState('')
+  const [savingColumn, setSavingColumn] = useState(false)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -79,6 +105,10 @@ export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
   }, [loadData])
 
   const handleDragStart = (event: DragStartEvent) => {
+    if (event.active.data.current?.type !== 'Card') {
+      return
+    }
+
     const cardId = event.active.id as string
     const card = columns.flatMap(c => c.cards).find(c => c.id === cardId)
     if (card) {
@@ -94,6 +124,27 @@ export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
 
     const activeId = active.id as string
     const overId = over.id as string
+    const activeType = active.data.current?.type
+
+    if (activeType === 'Column') {
+      const activeIndex = columns.findIndex(c => c.id === activeId)
+      const overIndex = columns.findIndex(c => c.id === overId)
+
+      if (activeIndex === -1 || overIndex === -1 || activeIndex === overIndex) return
+
+      const reorderedColumns = arrayMove(columns, activeIndex, overIndex).map((column, index) => ({
+        ...column,
+        position: index,
+      }))
+
+      setColumns(reorderedColumns)
+      await Promise.all(
+        reorderedColumns.map((column) => updateColumn(column.id, { position: column.position }))
+      )
+      return
+    }
+
+    if (activeType !== 'Card') return
 
     const activeColumn = columns.find(c => c.cards.some(card => card.id === activeId))
     const overColumn = columns.find(c => c.id === overId || c.cards.some(card => card.id === overId))
@@ -161,6 +212,39 @@ export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
     loadData()
   }
 
+  const handleAddColumn = async () => {
+    const trimmedTitle = columnTitle.trim()
+    if (!board || !trimmedTitle) return
+
+    setSavingColumn(true)
+    try {
+      await createColumn(board.id, userId, trimmedTitle)
+      setColumnTitle('')
+      setColumnModalOpen(false)
+      await loadData()
+    } finally {
+      setSavingColumn(false)
+    }
+  }
+
+  const handleDeleteColumn = async (columnId: string) => {
+    const column = columns.find((item) => item.id === columnId)
+    if (!column) return
+
+    if (!confirm(`Delete "${column.title}" and all cards in this column?`)) return
+
+    await deleteColumn(columnId)
+    const remainingColumns = columns
+      .filter((item) => item.id !== columnId)
+      .map((item, index) => ({ ...item, position: index }))
+
+    setColumns(remainingColumns)
+    await Promise.all(
+      remainingColumns.map((item) => updateColumn(item.id, { position: item.position }))
+    )
+    await loadData()
+  }
+
   const dropAnimation: DropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
       styles: { active: { opacity: '0.5' } },
@@ -218,6 +302,14 @@ export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
               <Plus className="w-4 h-4 mr-2" />
               Add Card
             </Button>
+            <Button
+              onClick={() => setColumnModalOpen(true)}
+              variant="outline"
+              style={{ color: '#209dd7', borderColor: '#209dd7' }}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Column
+            </Button>
           </div>
         </div>
       </header>
@@ -229,7 +321,11 @@ export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
         onDragEnd={handleDragEnd}
       >
         <div className="flex-1 overflow-x-auto p-6">
-          <div className="flex gap-6 h-full">
+          <SortableContext
+            items={columns.map((column) => column.id)}
+            strategy={horizontalListSortingStrategy}
+          >
+            <div className="flex gap-6 h-full">
             {columns.map((column) => (
               <ColumnComponent
                 key={column.id}
@@ -237,9 +333,11 @@ export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
                 onAddCard={handleAddCard}
                 onEditCard={handleEditCard}
                 onCardsChanged={loadData}
+                onDeleteColumn={handleDeleteColumn}
               />
             ))}
-          </div>
+            </div>
+          </SortableContext>
         </div>
 
         <DragOverlay dropAnimation={dropAnimation}>
@@ -258,6 +356,44 @@ export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
         userId={userId}
         onSaved={handleCardSaved}
       />
+
+      <Dialog open={columnModalOpen} onOpenChange={setColumnModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle style={{ color: '#032147' }}>
+              Add Column
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2 py-3">
+            <Label htmlFor="column-title" style={{ color: '#032147' }}>
+              Title
+            </Label>
+            <Input
+              id="column-title"
+              value={columnTitle}
+              onChange={(event) => setColumnTitle(event.target.value)}
+              placeholder="Column title"
+              autoFocus
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && columnTitle.trim()) handleAddColumn()
+              }}
+            />
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setColumnModalOpen(false)} style={{ color: '#888888' }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddColumn}
+              disabled={!columnTitle.trim() || savingColumn}
+              className="text-white"
+              style={{ backgroundColor: '#753991' }}
+            >
+              {savingColumn ? 'Saving...' : 'Create'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

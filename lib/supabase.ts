@@ -176,6 +176,53 @@ export async function updateColumn(columnId: string, updates: Partial<Column>) {
   }
 }
 
+export async function createColumn(boardId: string, userId: string, title: string): Promise<Column | null> {
+  const supabase = createClient()
+  const columns = await getColumns(boardId)
+
+  const { data, error } = await supabase
+    .from('columns')
+    .insert({
+      board_id: boardId,
+      user_id: userId,
+      title,
+      position: columns.length,
+    })
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error creating column:', error)
+    throw error
+  }
+
+  return data
+}
+
+export async function deleteColumn(columnId: string) {
+  const supabase = createClient()
+
+  const { error: cardsError } = await supabase
+    .from('cards')
+    .delete()
+    .eq('column_id', columnId)
+
+  if (cardsError) {
+    console.error('Error deleting column cards:', cardsError)
+    throw cardsError
+  }
+
+  const { error } = await supabase
+    .from('columns')
+    .delete()
+    .eq('id', columnId)
+
+  if (error) {
+    console.error('Error deleting column:', error)
+    throw error
+  }
+}
+
 export async function getCards(boardId: string): Promise<Card[]> {
   const supabase = createClient()
   
