@@ -13,9 +13,10 @@ interface CardProps {
   card: CardType
   onEdit: () => void
   onDelete: () => void
+  dragOverlay?: boolean
 }
 
-export function Card({ card, onEdit, onDelete }: CardProps) {
+export function Card({ card, onEdit, onDelete, dragOverlay = false }: CardProps) {
   const {
     attributes,
     listeners,
@@ -26,6 +27,7 @@ export function Card({ card, onEdit, onDelete }: CardProps) {
   } = useSortable({
     id: card.id,
     data: { type: 'Card', card },
+    disabled: dragOverlay,
   })
 
   const style: CSSProperties = {
@@ -48,7 +50,7 @@ export function Card({ card, onEdit, onDelete }: CardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="mb-3 cursor-grab border-white/80 bg-white/95 shadow-[0_10px_26px_rgb(3_33_71/0.07)] ring-white/80 transition-all duration-200 active:cursor-grabbing hover:-translate-y-1 hover:shadow-[0_16px_38px_rgb(3_33_71/0.12)]"
+      className={`mb-3 cursor-grab border-white/80 bg-white/95 shadow-[0_10px_26px_rgb(3_33_71/0.07)] ring-white/80 transition-all duration-200 active:cursor-grabbing hover:-translate-y-1 hover:shadow-[0_16px_38px_rgb(3_33_71/0.12)] ${dragOverlay ? 'pointer-events-none scale-[1.02] rotate-1 opacity-95 shadow-[0_24px_70px_rgb(3_33_71/0.2)]' : ''}`}
     >
       <CardContent className="p-3.5 sm:p-4">
         <div className="flex items-start justify-between gap-2">
