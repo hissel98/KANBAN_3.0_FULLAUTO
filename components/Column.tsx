@@ -56,7 +56,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
     <div
       ref={setNodeRef}
       style={style}
-      className="flex w-80 flex-shrink-0 flex-col rounded-xl border border-border/80 bg-white/70 shadow-sm backdrop-blur transition-all duration-200 hover:shadow-md"
+      className="flex w-[min(84vw,20rem)] flex-shrink-0 flex-col rounded-xl border border-border/80 bg-white/70 shadow-sm backdrop-blur transition-all duration-200 hover:shadow-md sm:w-80"
     >
       <div className="rounded-t-xl border-b border-border/80 bg-white/90 p-4">
         {isEditing ? (
@@ -84,7 +84,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
               <Button
                 size="icon-sm"
                 variant="ghost"
-                className="h-8 w-8 cursor-grab active:cursor-grabbing"
+                className="h-11 w-11 cursor-grab active:cursor-grabbing sm:h-8 sm:w-8"
                 aria-label={`Reorder ${column.title}`}
                 {...attributes}
                 {...listeners}
@@ -100,7 +100,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
                 size="icon"
                 variant="ghost"
                 onClick={() => setIsEditing(true)}
-                className="h-8 w-8"
+                className="h-11 w-11 sm:h-8 sm:w-8"
               >
                 <Edit2 className="w-4 h-4" style={{ color: '#888888' }} />
               </Button>
@@ -108,7 +108,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
                 size="icon"
                 variant="ghost"
                 onClick={() => onAddCard(column.id)}
-                className="h-8 w-8"
+                className="h-11 w-11 sm:h-8 sm:w-8"
               >
                 <Plus className="w-4 h-4" style={{ color: '#753991' }} />
               </Button>
@@ -116,7 +116,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
                 size="icon"
                 variant="ghost"
                 onClick={() => onDeleteColumn(column.id)}
-                className="h-8 w-8"
+                className="h-11 w-11 sm:h-8 sm:w-8"
               >
                 <Trash2 className="w-4 h-4" style={{ color: '#888888' }} />
               </Button>
@@ -129,7 +129,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
         items={column.cards.map((c) => c.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="flex-1 p-3 overflow-y-auto min-h-[200px]">
+        <div className="min-h-[200px] flex-1 overflow-y-auto p-3">
           {column.cards.map((card) => (
             <CardComponent
               key={card.id}

@@ -286,10 +286,10 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
           <h1 className="min-w-0 truncate text-2xl font-semibold tracking-tight" style={{ color: '#032147' }}>
             {board?.title || 'My Project'}
           </h1>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
             <Link
               href="/dashboard"
-              className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-white px-2.5 text-sm font-medium transition-all hover:border-[#209dd7]/50 hover:bg-muted"
+              className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-white px-2.5 text-sm font-medium transition-all hover:border-[#209dd7]/50 hover:bg-muted sm:h-9"
               style={{ color: '#032147' }}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -299,7 +299,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
               onClick={() => handleAddCard(columns[0]?.id)}
               disabled={!columns[0]}
               style={{ backgroundColor: '#209dd7' }}
-              className="text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+              className="h-11 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:h-8"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Card
@@ -307,7 +307,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
             <Button
               onClick={() => setColumnModalOpen(true)}
               variant="outline"
-              className="bg-white transition-all hover:-translate-y-0.5 hover:shadow-sm"
+              className="h-11 bg-white transition-all hover:-translate-y-0.5 hover:shadow-sm sm:h-8"
               style={{ color: '#753991', borderColor: '#753991' }}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -324,12 +324,12 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex-1 overflow-x-auto p-6">
+        <div className="flex-1 overflow-x-auto overscroll-x-contain px-3 py-4 sm:px-6 sm:py-6">
           <SortableContext
             items={columns.map((column) => column.id)}
             strategy={horizontalListSortingStrategy}
           >
-            <div className="flex h-full gap-6">
+            <div className="flex h-full min-w-max gap-4 pr-3 sm:gap-6 sm:pr-6">
             {columns.map((column) => (
               <ColumnComponent
                 key={column.id}
@@ -362,7 +362,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
       />
 
       <Dialog open={columnModalOpen} onOpenChange={setColumnModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-h-[calc(100dvh-1rem)] overflow-y-auto sm:max-w-md">
           <DialogHeader>
             <DialogTitle style={{ color: '#032147' }}>
               Add Column
@@ -383,14 +383,14 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
               }}
             />
           </div>
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setColumnModalOpen(false)} style={{ color: '#888888' }}>
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <Button variant="outline" onClick={() => setColumnModalOpen(false)} className="h-11" style={{ color: '#888888' }}>
               Cancel
             </Button>
             <Button
               onClick={handleAddColumn}
               disabled={!columnTitle.trim() || savingColumn}
-              className="text-white"
+              className="h-11 text-white"
               style={{ backgroundColor: '#209dd7' }}
             >
               {savingColumn ? 'Saving...' : 'Create'}

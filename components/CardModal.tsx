@@ -79,7 +79,7 @@ export function CardModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-h-[calc(100dvh-1rem)] overflow-y-auto sm:max-w-md">
         <DialogHeader>
           <DialogTitle style={{ color: '#032147' }}>
             {isEdit ? 'Edit Card' : 'Create Card'}
@@ -99,6 +99,7 @@ export function CardModal({
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && title.trim()) handleSave()
               }}
+              className="h-11"
             />
           </div>
 
@@ -116,10 +117,11 @@ export function CardModal({
           </div>
         </div>
 
-        <div className="flex justify-end gap-3">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
+            className="h-11"
             style={{ color: '#888888' }}
           >
             Cancel
@@ -128,7 +130,7 @@ export function CardModal({
             onClick={handleSave}
             disabled={!title.trim() || saving}
             style={{ backgroundColor: '#753991' }}
-            className="text-white"
+            className="h-11 text-white"
           >
             {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
           </Button>

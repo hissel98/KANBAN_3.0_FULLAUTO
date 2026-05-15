@@ -55,7 +55,7 @@ export function UserMenu({ email }: UserMenuProps) {
         onClick={() => setOpen((current) => !current)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="max-w-52"
+        className="h-11 max-w-52 bg-white sm:h-8"
         style={{ color: '#032147', borderColor: '#ecad0a' }}
       >
         <User className="w-4 h-4" style={{ color: '#209dd7' }} />
@@ -66,7 +66,7 @@ export function UserMenu({ email }: UserMenuProps) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-lg border border-gray-200 bg-white py-2 text-sm shadow-lg"
+          className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-lg border border-border bg-white py-2 text-sm shadow-lg"
         >
           <div className="border-b border-gray-100 px-3 pb-2">
             <p className="text-xs font-medium uppercase" style={{ color: '#888888' }}>
@@ -79,7 +79,7 @@ export function UserMenu({ email }: UserMenuProps) {
           <Link
             href="/settings"
             role="menuitem"
-            className="mt-1 flex w-full items-center gap-2 px-3 py-2 text-left font-medium hover:bg-gray-50"
+            className="mt-1 flex min-h-11 w-full items-center gap-2 px-3 py-2 text-left font-medium hover:bg-muted"
             style={{ color: '#032147' }}
             onClick={() => setOpen(false)}
           >
@@ -91,7 +91,7 @@ export function UserMenu({ email }: UserMenuProps) {
             role="menuitem"
             onClick={handleSignOut}
             disabled={signingOut}
-            className="mt-1 flex w-full items-center gap-2 px-3 py-2 text-left font-medium hover:bg-gray-50 disabled:opacity-60"
+            className="mt-1 flex min-h-11 w-full items-center gap-2 px-3 py-2 text-left font-medium hover:bg-muted disabled:opacity-60"
             style={{ color: '#753991' }}
           >
             <LogOut className="w-4 h-4" />

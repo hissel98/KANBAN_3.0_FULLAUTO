@@ -96,10 +96,10 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
               Choose a board or create a new workspace.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex w-full items-center gap-2 sm:w-auto">
             <Button
               onClick={openCreateModal}
-              className="text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+              className="h-11 flex-1 text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex-none"
               style={{ backgroundColor: '#209dd7' }}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -133,7 +133,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
             </Button>
           </div>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {boards.map((board) => (
               <Card key={board.id} className="rounded-xl border-white/70 bg-white/95 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
                 <CardHeader>
@@ -152,6 +152,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
                       variant="ghost"
                       onClick={() => openRenameModal(board)}
                       aria-label={`Rename ${board.title}`}
+                      className="h-11 w-11 sm:h-8 sm:w-8"
                     >
                       <Edit2 className="w-4 h-4" style={{ color: '#209dd7' }} />
                     </Button>
@@ -160,6 +161,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
                       variant="ghost"
                       onClick={() => handleDelete(board)}
                       aria-label={`Delete ${board.title}`}
+                      className="h-11 w-11 sm:h-8 sm:w-8"
                     >
                       <Trash2 className="w-4 h-4" style={{ color: '#888888' }} />
                     </Button>
@@ -168,7 +170,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
                 <CardContent>
                   <Link
                     href={`/board/${board.id}`}
-                    className="inline-flex h-9 w-full items-center justify-center rounded-lg border border-border bg-white px-2.5 text-sm font-medium transition-all hover:border-[#209dd7]/50 hover:bg-muted"
+                    className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-border bg-white px-2.5 text-sm font-medium transition-all hover:border-[#209dd7]/50 hover:bg-muted sm:h-9"
                     style={{ color: '#032147' }}
                   >
                     Open Board
@@ -181,7 +183,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
       </section>
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-h-[calc(100dvh-1rem)] overflow-y-auto sm:max-w-md">
           <DialogHeader>
             <DialogTitle style={{ color: '#032147' }}>
               {editingBoard ? 'Rename Board' : 'Create Board'}
@@ -202,14 +204,14 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
               }}
             />
           </div>
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setModalOpen(false)} style={{ color: '#888888' }}>
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <Button variant="outline" onClick={() => setModalOpen(false)} className="h-11" style={{ color: '#888888' }}>
               Cancel
             </Button>
             <Button
               onClick={handleSave}
               disabled={!title.trim() || saving}
-              className="text-white"
+              className="h-11 text-white"
               style={{ backgroundColor: '#209dd7' }}
             >
               {saving ? 'Saving...' : editingBoard ? 'Rename' : 'Create'}
