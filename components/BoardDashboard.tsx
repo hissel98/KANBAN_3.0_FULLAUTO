@@ -22,12 +22,14 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { UserMenu } from '@/components/UserMenu'
 
 interface BoardDashboardProps {
   userId: string
+  userEmail: string
 }
 
-export function BoardDashboard({ userId }: BoardDashboardProps) {
+export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
   const [boards, setBoards] = useState<Board[]>([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
@@ -94,14 +96,17 @@ export function BoardDashboard({ userId }: BoardDashboardProps) {
               Choose a board or create a new workspace.
             </p>
           </div>
-          <Button
-            onClick={openCreateModal}
-            className="text-white"
-            style={{ backgroundColor: '#753991' }}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Board
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={openCreateModal}
+              className="text-white"
+              style={{ backgroundColor: '#753991' }}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create Board
+            </Button>
+            <UserMenu email={userEmail} />
+          </div>
         </div>
       </header>
 

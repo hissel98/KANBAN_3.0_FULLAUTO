@@ -46,13 +46,15 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { UserMenu } from '@/components/UserMenu'
 
 interface KanbanBoardProps {
   userId: string
+  userEmail: string
   boardId?: string
 }
 
-export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
+export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
   const [board, setBoard] = useState<Board | null>(null)
   const [columns, setColumns] = useState<ColumnWithCards[]>([])
   const [loading, setLoading] = useState(true)
@@ -310,6 +312,7 @@ export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
               <Plus className="w-4 h-4 mr-2" />
               Add Column
             </Button>
+            <UserMenu email={userEmail} />
           </div>
         </div>
       </header>

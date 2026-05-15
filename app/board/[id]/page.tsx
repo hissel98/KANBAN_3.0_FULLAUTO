@@ -20,5 +20,5 @@ export default async function BoardPage({ params }: BoardPageProps) {
 
   const { id } = await params
 
-  return <KanbanBoard userId={session.user.id} boardId={id} />
+  return <KanbanBoard userId={session.user.id} userEmail={session.user.email ?? ''} boardId={id} />
 }

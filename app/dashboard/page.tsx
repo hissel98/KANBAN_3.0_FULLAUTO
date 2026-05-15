@@ -11,6 +11,6 @@ export default async function DashboardPage() {
   }
 
   return (
-    <BoardDashboard userId={session.user.id} />
+    <BoardDashboard userId={session.user.id} userEmail={session.user.email ?? ''} />
   )
 }
