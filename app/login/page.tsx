@@ -65,6 +65,24 @@ export default function LoginPage() {
     setLoading(false)
   }
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true)
+    setError(null)
+    setMessage(null)
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <Card className="w-full max-w-md">
@@ -118,6 +136,16 @@ export default function LoginPage() {
             )}
 
             <div className="space-y-2 pt-2">
+              <Button
+                type="button"
+                onClick={handleGoogleSignIn}
+                disabled={loading}
+                variant="outline"
+                className="w-full"
+                style={{ color: '#032147', borderColor: '#ecad0a' }}
+              >
+                Sign in with Google
+              </Button>
               <Button
                 type="button"
                 onClick={handleLogin}
