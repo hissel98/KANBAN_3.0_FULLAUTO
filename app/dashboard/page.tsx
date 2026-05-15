@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/server'
-import { KanbanBoard } from '@/components/KanbanBoard'
+import { BoardDashboard } from '@/components/BoardDashboard'
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient()
@@ -11,6 +11,6 @@ export default async function DashboardPage() {
   }
 
   return (
-    <KanbanBoard userId={session.user.id} />
+    <BoardDashboard userId={session.user.id} />
   )
 }

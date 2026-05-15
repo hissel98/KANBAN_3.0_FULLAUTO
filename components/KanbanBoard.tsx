@@ -15,19 +15,21 @@ import {
   DropAnimation,
 } from '@dnd-kit/core'
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { createClient, getBoard, createBoard, getColumns, getCards, updateCard } from '@/lib/supabase'
+import { getBoard, getBoardById, createBoard, getColumns, getCards, updateCard } from '@/lib/supabase'
 import { Board, Column, Card, ColumnWithCards } from '@/types'
 import { Column as ColumnComponent } from './Column'
 import { Card as CardComponent } from './Card'
 import { CardModal } from './CardModal'
 import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import { ArrowLeft, Plus } from 'lucide-react'
+import Link from 'next/link'
 
 interface KanbanBoardProps {
   userId: string
+  boardId?: string
 }
 
-export function KanbanBoard({ userId }: KanbanBoardProps) {
+export function KanbanBoard({ userId, boardId }: KanbanBoardProps) {
   const [board, setBoard] = useState<Board | null>(null)
   const [columns, setColumns] = useState<ColumnWithCards[]>([])
   const [loading, setLoading] = useState(true)
@@ -46,9 +48,11 @@ export function KanbanBoard({ userId }: KanbanBoardProps) {
   )
 
   const loadData = useCallback(async () => {
-    let currentBoard = await getBoard(userId)
+    let currentBoard = boardId
+      ? await getBoardById(boardId, userId)
+      : await getBoard(userId)
     
-    if (!currentBoard) {
+    if (!currentBoard && !boardId) {
       currentBoard = await createBoard(userId)
     }
     
@@ -63,9 +67,12 @@ export function KanbanBoard({ userId }: KanbanBoardProps) {
       }))
       
       setColumns(columnsWithCards)
+    } else {
+      setBoard(null)
+      setColumns([])
     }
     setLoading(false)
-  }, [userId])
+  }, [boardId, userId])
 
   useEffect(() => {
     loadData()
@@ -164,6 +171,28 @@ export function KanbanBoard({ userId }: KanbanBoardProps) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>
   }
 
+  if (!board) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold" style={{ color: '#032147' }}>
+            Board not found
+          </h1>
+          <p className="mt-2 text-sm" style={{ color: '#888888' }}>
+            This board does not exist or you do not have access to it.
+          </p>
+          <Link
+            href="/dashboard"
+            className="mt-5 inline-flex h-8 items-center justify-center rounded-lg px-2.5 text-sm font-medium text-white"
+            style={{ backgroundColor: '#753991' }}
+          >
+            Back to Dashboard
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="h-screen flex flex-col">
       <header className="bg-white border-b border-gray-200 px-6 py-4">
@@ -171,14 +200,25 @@ export function KanbanBoard({ userId }: KanbanBoardProps) {
           <h1 className="text-2xl font-bold" style={{ color: '#032147' }}>
             {board?.title || 'My Project'}
           </h1>
-          <Button
-            onClick={() => handleAddCard(columns[0]?.id)}
-            style={{ backgroundColor: '#753991' }}
-            className="text-white hover:opacity-90"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Card
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/dashboard"
+              className="inline-flex h-8 items-center justify-center rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium hover:bg-gray-50"
+              style={{ color: '#032147' }}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Boards
+            </Link>
+            <Button
+              onClick={() => handleAddCard(columns[0]?.id)}
+              disabled={!columns[0]}
+              style={{ backgroundColor: '#753991' }}
+              className="text-white hover:opacity-90"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Card
+            </Button>
+          </div>
         </div>
       </header>
 

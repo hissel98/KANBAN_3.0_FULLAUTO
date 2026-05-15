@@ -2,6 +2,7 @@ export interface Board {
   id: string;
   user_id: string;
   title: string;
+  position: number;
   created_at: string;
   updated_at: string;
 }

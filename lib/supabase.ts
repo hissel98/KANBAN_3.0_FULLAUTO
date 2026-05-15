@@ -17,6 +17,8 @@ export async function getBoard(userId: string): Promise<Board | null> {
     .from('boards')
     .select('*')
     .eq('user_id', userId)
+    .order('position')
+    .order('created_at')
     .limit(1)
   
   if (error) {
@@ -27,12 +29,49 @@ export async function getBoard(userId: string): Promise<Board | null> {
   return boards?.[0] || null
 }
 
-export async function createBoard(userId: string): Promise<Board | null> {
+export async function getBoards(userId: string): Promise<Board[]> {
   const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('boards')
+    .select('*')
+    .eq('user_id', userId)
+    .order('position')
+    .order('created_at')
+
+  if (error) {
+    console.error('Error fetching boards:', error)
+    return []
+  }
+
+  return data || []
+}
+
+export async function getBoardById(boardId: string, userId: string): Promise<Board | null> {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('boards')
+    .select('*')
+    .eq('id', boardId)
+    .eq('user_id', userId)
+    .single()
+
+  if (error) {
+    console.error('Error fetching board:', error)
+    return null
+  }
+
+  return data
+}
+
+export async function createBoard(userId: string, title = 'My Project'): Promise<Board | null> {
+  const supabase = createClient()
+  const boards = await getBoards(userId)
   
   const { data, error } = await supabase
     .from('boards')
-    .insert({ user_id: userId, title: 'My Project' })
+    .insert({ user_id: userId, title, position: boards.length })
     .select()
     .single()
   
@@ -56,6 +95,54 @@ export async function createBoard(userId: string): Promise<Board | null> {
   }
   
   return data
+}
+
+export async function updateBoard(boardId: string, updates: Partial<Board>) {
+  const supabase = createClient()
+
+  const { error } = await supabase
+    .from('boards')
+    .update(updates)
+    .eq('id', boardId)
+
+  if (error) {
+    console.error('Error updating board:', error)
+    throw error
+  }
+}
+
+export async function deleteBoard(boardId: string) {
+  const supabase = createClient()
+
+  const { error: cardsError } = await supabase
+    .from('cards')
+    .delete()
+    .eq('board_id', boardId)
+
+  if (cardsError) {
+    console.error('Error deleting board cards:', cardsError)
+    throw cardsError
+  }
+
+  const { error: columnsError } = await supabase
+    .from('columns')
+    .delete()
+    .eq('board_id', boardId)
+
+  if (columnsError) {
+    console.error('Error deleting board columns:', columnsError)
+    throw columnsError
+  }
+
+  const { error } = await supabase
+    .from('boards')
+    .delete()
+    .eq('id', boardId)
+
+  if (error) {
+    console.error('Error deleting board:', error)
+    throw error
+  }
 }
 
 export async function getColumns(boardId: string): Promise<Column[]> {
