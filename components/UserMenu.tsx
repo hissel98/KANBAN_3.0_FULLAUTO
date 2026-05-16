@@ -66,7 +66,7 @@ export function UserMenu({ email }: UserMenuProps) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-50 mt-2 w-[min(16rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-white py-2 text-sm shadow-lg"
+          className="absolute right-0 z-[100] mt-2 w-[min(16rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-white py-2 text-sm shadow-lg"
         >
           <div className="border-b border-gray-100 px-3 pb-2">
             <p className="text-xs font-medium uppercase" style={{ color: '#888888' }}>

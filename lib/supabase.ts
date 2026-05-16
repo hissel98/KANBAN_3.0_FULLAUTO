@@ -240,12 +240,21 @@ export async function getCards(boardId: string): Promise<Card[]> {
   return data || []
 }
 
-export async function createCard(card: Omit<Card, 'id' | 'created_at' | 'updated_at'>) {
+export async function createCard(card: Omit<Card, 'id' | 'created_at' | 'updated_at' | 'position'>) {
   const supabase = createClient()
+  
+  const { data: existingCards, error: countError } = await supabase
+    .from('cards')
+    .select('position')
+    .eq('column_id', card.column_id)
+    .order('position', { ascending: false })
+    .limit(1)
+  
+  const nextPosition = countError ? 0 : (existingCards?.[0]?.position ?? -1) + 1
   
   const { data, error } = await supabase
     .from('cards')
-    .insert(card)
+    .insert({ ...card, position: nextPosition })
     .select()
     .single()
   

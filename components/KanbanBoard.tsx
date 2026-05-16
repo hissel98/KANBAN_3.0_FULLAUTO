@@ -355,7 +355,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
 
   return (
     <div className="apple-surface flex h-dvh flex-col overflow-hidden">
-      <header className="border-b border-white/70 bg-white/80 px-4 py-5 shadow-sm backdrop-blur-xl sm:px-6">
+      <header className="relative z-50 border-b border-white/70 bg-white/80 px-4 py-5 shadow-sm backdrop-blur-xl sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="min-w-0 truncate text-3xl font-semibold tracking-tight" style={{ color: '#032147' }}>
             {board?.title || 'My Project'}

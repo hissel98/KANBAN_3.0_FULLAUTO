@@ -64,7 +64,6 @@ export function CardModal({
           user_id: userId,
           title: title.trim(),
           description: description.trim(),
-          position: Date.now(),
         })
       }
       onSaved()

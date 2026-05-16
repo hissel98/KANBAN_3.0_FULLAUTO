@@ -1,0 +1,29 @@
+erDiagram
+    BOARDS {
+        uuid id PK
+        uuid user_id FK
+        varchar name
+        integer position
+        timestamptz created_at
+    }
+    COLUMNS {
+        uuid id PK
+        uuid board_id FK
+        varchar name
+        integer position
+        timestamptz created_at
+    }
+    CARDS {
+        uuid id PK
+        uuid column_id FK
+        varchar title
+        text description
+        integer position
+        timestamptz created_at
+    }
+    AUTH_USERS {
+        uuid id PK
+    }
+    AUTH_USERS ||--o{ BOARDS : owns
+    BOARDS ||--o{ COLUMNS : contains
+    COLUMNS ||--o{ CARDS : contains
