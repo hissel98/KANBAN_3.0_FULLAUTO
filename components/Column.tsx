@@ -1,7 +1,7 @@
 'use client'
 
 import type { CSSProperties } from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { ColumnWithCards, Card } from '@/types'
@@ -24,13 +24,6 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(column.title)
 
-  // Sync local title state when column prop changes (e.g. after rename)
-  useEffect(() => {
-    if (!isEditing) {
-      setTitle(column.title)
-    }
-  }, [column.title, isEditing])
-
   const {
     attributes,
     listeners,
@@ -52,7 +45,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
   const handleSaveTitle = async () => {
     if (title.trim() && title !== column.title) {
       await updateColumn(column.id, { title: title.trim() })
-      // Notify parent component to update local state immediately
+      // Notify parent component to update its state for data consistency
       onColumnUpdated?.(column.id, { title: title.trim() })
     }
     setIsEditing(false)
@@ -96,7 +89,7 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
                 size="icon-sm"
                 variant="ghost"
                 className="h-11 w-11 cursor-grab active:cursor-grabbing sm:h-8 sm:w-8"
-                aria-label={`Reorder ${title}`}
+                aria-label={`Reorder ${column.title}`}
                 {...attributes}
                 {...listeners}
               >
