@@ -4,7 +4,7 @@ import type { CSSProperties } from 'react'
 import { useState } from 'react'
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { ColumnWithCards, Card } from '@/types'
+import { ColumnWithCards, Card, Column as ColumnType } from '@/types'
 import { Card as CardComponent } from './Card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,7 +17,7 @@ interface ColumnProps {
   onEditCard: (card: Card) => void
   onCardsChanged: () => void
   onDeleteColumn: (columnId: string) => void
-  onColumnUpdated?: (columnId: string, updates: Partial<Column>) => void
+  onColumnUpdated?: (columnId: string, updates: Partial<ColumnType>) => void
 }
 
 export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDeleteColumn, onColumnUpdated }: ColumnProps) {
