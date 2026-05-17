@@ -96,14 +96,14 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
                 size="icon-sm"
                 variant="ghost"
                 className="h-11 w-11 cursor-grab active:cursor-grabbing sm:h-8 sm:w-8"
-                aria-label={`Reorder ${column.title}`}
+                aria-label={`Reorder ${title}`}
                 {...attributes}
                 {...listeners}
               >
                 <GripVertical className="w-4 h-4" style={{ color: '#888888' }} />
               </Button>
               <h3 className="truncate font-semibold tracking-tight" style={{ color: '#032147' }}>
-                {column.title}
+                {title}
               </h3>
             </div>
             <span className="mx-1 rounded-full bg-[#209dd7]/10 px-2 py-0.5 text-xs font-semibold" style={{ color: '#209dd7' }}>
