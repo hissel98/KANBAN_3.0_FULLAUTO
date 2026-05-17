@@ -1,7 +1,7 @@
 'use client'
 
 import type { CSSProperties } from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { ColumnWithCards, Card } from '@/types'
@@ -23,6 +23,13 @@ interface ColumnProps {
 export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDeleteColumn, onColumnUpdated }: ColumnProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(column.title)
+
+  // Sync local title state when column prop changes (e.g. after rename)
+  useEffect(() => {
+    if (!isEditing) {
+      setTitle(column.title)
+    }
+  }, [column.title, isEditing])
 
   const {
     attributes,
