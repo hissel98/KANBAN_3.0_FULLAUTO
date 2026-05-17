@@ -17,9 +17,10 @@ interface ColumnProps {
   onEditCard: (card: Card) => void
   onCardsChanged: () => void
   onDeleteColumn: (columnId: string) => void
+  onColumnUpdated?: (columnId: string, updates: Partial<Column>) => void
 }
 
-export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDeleteColumn }: ColumnProps) {
+export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDeleteColumn, onColumnUpdated }: ColumnProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(column.title)
 
@@ -44,6 +45,8 @@ export function Column({ column, onAddCard, onEditCard, onCardsChanged, onDelete
   const handleSaveTitle = async () => {
     if (title.trim() && title !== column.title) {
       await updateColumn(column.id, { title: title.trim() })
+      // Notify parent component to update local state immediately
+      onColumnUpdated?.(column.id, { title: title.trim() })
     }
     setIsEditing(false)
   }

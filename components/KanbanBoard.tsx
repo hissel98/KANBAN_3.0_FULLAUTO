@@ -321,6 +321,14 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
     await loadData()
   }
 
+  const handleColumnUpdated = (columnId: string, updates: Partial<Column>) => {
+    setColumns(prev =>
+      prev.map(col =>
+        col.id === columnId ? { ...col, ...updates } : col
+      )
+    )
+  }
+
   const dropAnimation: DropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
       styles: { active: { opacity: '0.5' } },
@@ -421,6 +429,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
                 onEditCard={handleEditCard}
                 onCardsChanged={loadData}
                 onDeleteColumn={handleDeleteColumn}
+                onColumnUpdated={handleColumnUpdated}
               />
             ))}
             </div>
