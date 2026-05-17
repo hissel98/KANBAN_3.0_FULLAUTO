@@ -2,17 +2,15 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { ChevronDown, LogOut, Settings, User } from 'lucide-react'
-import { createClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
+import { signOut } from '@/app/actions'
 
 interface UserMenuProps {
   email: string
 }
 
 export function UserMenu({ email }: UserMenuProps) {
-  const router = useRouter()
   const menuRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
@@ -41,10 +39,7 @@ export function UserMenu({ email }: UserMenuProps) {
 
   const handleSignOut = async () => {
     setSigningOut(true)
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
+    await signOut()
   }
 
   return (
