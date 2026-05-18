@@ -13,7 +13,7 @@ test.describe('Persistenz', () => {
     const boardTitle = `Persist ${Date.now()}`
     await page.click('text=Create Board')
     await page.fill('input[placeholder="Board title"]', boardTitle)
-    await page.click('text=Create')
+    await page.press('input[placeholder="Board title"]', 'Enter')
     await page.waitForSelector('text=' + boardTitle, { timeout: 5000 })
     
     // Reload
@@ -28,7 +28,7 @@ test.describe('Persistenz', () => {
     const boardTitle = `ReLogin ${Date.now()}`
     await page.click('text=Create Board')
     await page.fill('input[placeholder="Board title"]', boardTitle)
-    await page.click('text=Create')
+    await page.press('input[placeholder="Board title"]', 'Enter')
     await page.waitForSelector('text=' + boardTitle, { timeout: 5000 })
     
     // Logout
@@ -52,7 +52,7 @@ test.describe('Persistenz', () => {
     const boardTitle = `Private ${Date.now()}`
     await page1.click('text=Create Board')
     await page1.fill('input[placeholder="Board title"]', boardTitle)
-    await page1.click('text=Create')
+    await page1.press('input[placeholder="Board title"]', 'Enter')
     await page1.waitForSelector('text=' + boardTitle, { timeout: 5000 })
     
     // User 2 (unauthentifiziert) darf Board nicht sehen

@@ -12,9 +12,9 @@ test.describe('Columns', () => {
     await loginAsTestUser(page)
     await page.goto('/dashboard')
     boardTitle = `Column Test ${Date.now()}`
-    await page.click('text=Create new board')
+    await page.click('text=Create Board')
     await page.fill('input[placeholder="Board title"]', boardTitle)
-    await page.click('text=Create')
+    await page.press('input[placeholder="Board title"]', 'Enter')
     await page.waitForSelector('text=' + boardTitle, { timeout: 5000 })
     await page.click('text=' + boardTitle)
     await page.waitForURL(/\/board\//, { timeout: 10000 })
@@ -55,7 +55,10 @@ test.describe('Columns', () => {
     const column = page.locator('h3:has-text("' + title + '")').first()
     await column.hover()
     await column.locator('xpath=../..').locator('button').nth(2).click()
-    await page.click('text=Delete')
+
+    // Browser-confirm dialog akzeptieren
+    page.on('dialog', dialog => dialog.accept())
+
     await expect(page.locator('h3:has-text("' + title + '")')).not.toBeVisible({ timeout: 5000 })
   })
 })

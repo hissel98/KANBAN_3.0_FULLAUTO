@@ -28,9 +28,10 @@ test.describe('Boards', () => {
     await page.waitForSelector('text=' + oldTitle, { timeout: 5000 })
 
     const newTitle = `Renamed ${Date.now()}`
-    const boardCard = page.locator(`text=${oldTitle}`).first()
-    await boardCard.hover()
-    await boardCard.locator('xpath=../../..').locator('button').nth(0).click()
+    // Finde die Card mit dem alten Titel
+    const card = page.locator('div[data-slot="card"]:has-text("' + oldTitle + '")').first()
+    // Edit-Button = erster Button in der Card
+    await card.locator('button').first().click()
     const input = page.locator('input').first()
     await input.fill(newTitle)
     await input.press('Enter')
@@ -45,15 +46,13 @@ test.describe('Boards', () => {
     await page.press('input[placeholder="Board title"]', 'Enter')
     await page.waitForSelector('text=' + title, { timeout: 5000 })
 
-    const boardCard = page.locator(`text=${title}`).first()
-    await boardCard.hover()
-    // Delete-Button = letzter Button in der Card (nach Edit)
-    const card = page.locator('.apple-card:has-text("' + title + '")').first()
-    const buttons = card.locator('button')
-    await buttons.last().click()
-    
-    // Browser-confirm dialog akzeptieren
+    // Browser-confirm dialog VOR dem Klick registrieren
     page.on('dialog', dialog => dialog.accept())
+    
+    // Finde die Card mit dem Titel
+    const card = page.locator('div[data-slot="card"]:has-text("' + title + '")').first()
+    // Delete-Button = letzter Button in der Card
+    await card.locator('button').last().click()
     
     await page.waitForTimeout(1000)
     await expect(page.locator('text=' + title)).not.toBeVisible({ timeout: 5000 })
