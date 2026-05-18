@@ -30,25 +30,29 @@ test.describe('Cards', () => {
     const cardTitle = `Card ${Date.now()}`
     // Add Card Button im Board-Header
     await page.click('text=Add Card')
-    await page.fill('input[placeholder="Card title"]', cardTitle)
-    await page.press('input[placeholder="Card title"]', 'Enter')
+    await page.fill('input[placeholder="Enter card title"]', cardTitle)
+    await page.press('input[placeholder="Enter card title"]', 'Enter')
     await expect(page.locator('text=' + cardTitle)).toBeVisible({ timeout: 5000 })
   })
 
   test('should delete a card', async ({ page }) => {
     const title = `Delete Card ${Date.now()}`
     await page.click('text=Add Card')
-    await page.fill('input[placeholder="Card title"]', title)
-    await page.press('input[placeholder="Card title"]', 'Enter')
+    await page.fill('input[placeholder="Enter card title"]', title)
+    await page.press('input[placeholder="Enter card title"]', 'Enter')
     await page.waitForSelector('text=' + title, { timeout: 5000 })
 
-    // Card oeffnen (klick auf den Text)
-    const card = page.locator('text=' + title).first()
-    await card.click()
+    // Card hover to reveal delete button
+    const card = page.locator('h4:has-text("' + title + '")').locator('xpath=../..')
+    await card.hover()
     
-    // Delete im Modal
-    await page.click('text=Delete')
-    await page.click('text=Delete') // Bestaetigen
+    // Handle browser confirm dialog
+    page.on('dialog', dialog => dialog.accept())
+    
+    // Find and click the trash/delete button (second button in the card actions)
+    const deleteButton = card.locator('button').nth(1)
+    await deleteButton.click()
+    
     await expect(page.locator('text=' + title)).not.toBeVisible({ timeout: 5000 })
   })
 })
