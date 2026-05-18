@@ -21,8 +21,6 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    // Auth-State fuer alle Tests
-    storageState: 'tests/.auth/state.json',
   },
 
   projects: [
