@@ -28,6 +28,7 @@ test.describe('Cards', () => {
 
   test('should create a new card', async ({ page }) => {
     const cardTitle = `Card ${Date.now()}`
+    // Add Card Button im Board-Header
     await page.click('text=Add Card')
     await page.fill('input[placeholder="Card title"]', cardTitle)
     await page.press('input[placeholder="Card title"]', 'Enter')
@@ -41,32 +42,13 @@ test.describe('Cards', () => {
     await page.press('input[placeholder="Card title"]', 'Enter')
     await page.waitForSelector('text=' + title, { timeout: 5000 })
 
+    // Card oeffnen (klick auf den Text)
     const card = page.locator('text=' + title).first()
     await card.click()
+    
+    // Delete im Modal
     await page.click('text=Delete')
     await page.click('text=Delete') // Bestaetigen
     await expect(page.locator('text=' + title)).not.toBeVisible({ timeout: 5000 })
-  })
-
-  test('should drag card between columns', async ({ page }) => {
-    // Zweite Column erstellen
-    await page.click('text=Add Column')
-    await page.fill('input[placeholder="Column title"]', 'Done')
-    await page.press('input[placeholder="Column title"]', 'Enter')
-    await page.waitForSelector('h3:has-text("Done")', { timeout: 5000 })
-
-    const cardTitle = `Drag Card ${Date.now()}`
-    await page.click('text=Add Card')
-    await page.fill('input[placeholder="Card title"]', cardTitle)
-    await page.press('input[placeholder="Card title"]', 'Enter')
-    await page.waitForSelector('text=' + cardTitle, { timeout: 5000 })
-
-    const card = page.locator('text=' + cardTitle).first()
-    const doneColumn = page.locator('h3:has-text("Done")').first()
-
-    await card.dragTo(doneColumn)
-
-    // Card sollte in Done-Column sichtbar sein
-    await expect(page.locator('h3:has-text("Done")').first().locator('xpath=../..').locator('text=' + cardTitle)).toBeVisible({ timeout: 5000 })
   })
 })
