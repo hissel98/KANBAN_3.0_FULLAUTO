@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card as CardType } from '@/types'
+import type { Card as CardType } from '@/types'
 import {
   Dialog,
   DialogContent,
@@ -38,13 +38,17 @@ export function CardModal({
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    if (card) {
-      setTitle(card.title)
-      setDescription(card.description || '')
-    } else {
-      setTitle('')
-      setDescription('')
-    }
+    const timeout = window.setTimeout(() => {
+      if (card) {
+        setTitle(card.title)
+        setDescription(card.description || '')
+      } else {
+        setTitle('')
+        setDescription('')
+      }
+    }, 0)
+
+    return () => window.clearTimeout(timeout)
   }, [card, open])
 
   const handleSave = async () => {

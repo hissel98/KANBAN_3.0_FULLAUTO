@@ -28,9 +28,9 @@ export const AUTH_FILE = 'tests/.auth/user.json'
 export const test = base.extend<{
   kanbanPage: KanbanPage
 }>({
-  kanbanPage: async ({ page }, use) => {
+  kanbanPage: async ({ page }, run) => {
     const kanban = new KanbanPage(page)
-    await use(kanban)
+    await run(kanban)
   },
 })
 

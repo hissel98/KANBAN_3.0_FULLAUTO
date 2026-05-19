@@ -33,7 +33,7 @@ import {
   updateCard,
   updateColumn,
 } from '@/lib/supabase'
-import { Board, Column, Card, ColumnWithCards } from '@/types'
+import type { Board, Column as ColumnType, Card, ColumnWithCards } from '@/types'
 import { Column as ColumnComponent } from './Column'
 import { Card as CardComponent } from './Card'
 import { CardModal } from './CardModal'
@@ -110,7 +110,11 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
   }, [boardId, userId])
 
   useEffect(() => {
-    loadData()
+    const timeout = window.setTimeout(() => {
+      void loadData()
+    }, 0)
+
+    return () => window.clearTimeout(timeout)
   }, [loadData])
 
   useEffect(() => {
@@ -321,7 +325,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
     await loadData()
   }
 
-  const handleColumnUpdated = (columnId: string, updates: Partial<Column>) => {
+  const handleColumnUpdated = (columnId: string, updates: Partial<ColumnType>) => {
     setColumns(prev =>
       prev.map(col =>
         col.id === columnId ? { ...col, ...updates } : col

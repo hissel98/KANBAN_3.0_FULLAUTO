@@ -3,9 +3,6 @@ import { loginAsTestUser } from './auth-helper'
 
 /**
  * Test-Suite: Boards
- * 
- * Delete-Test ausgelassen — Buttons erscheinen erst bei Hover,
- * im Headless-Modus schwierig zu automatisieren.
  */
 
 test.describe('Boards', () => {
@@ -39,5 +36,22 @@ test.describe('Boards', () => {
     await input.fill(newTitle)
     await input.press('Enter')
     await expect(page.locator('text=' + newTitle)).toBeVisible({ timeout: 5000 })
+  })
+
+  test('should delete a board', async ({ page }) => {
+    await page.goto('/dashboard')
+    const title = `Delete Board ${Date.now()}`
+    await page.click('text=Create Board')
+    await page.fill('input[placeholder="Board title"]', title)
+    await page.press('input[placeholder="Board title"]', 'Enter')
+    await page.waitForSelector('text=' + title, { timeout: 5000 })
+
+    const card = page.locator('div[data-slot="card"]:has-text("' + title + '")').first()
+    await card.hover()
+
+    page.once('dialog', dialog => dialog.accept())
+    await card.locator('button').nth(1).click({ force: true })
+
+    await expect(page.locator('text=' + title)).not.toBeVisible({ timeout: 5000 })
   })
 })

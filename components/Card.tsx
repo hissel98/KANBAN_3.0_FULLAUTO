@@ -3,7 +3,7 @@
 import type { CSSProperties } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Card as CardType } from '@/types'
+import type { Card as CardType } from '@/types'
 import { Card as CardUI, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Edit2, Trash2 } from 'lucide-react'

@@ -1,9 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { CalendarDays, Edit2, Plus, Trash2 } from 'lucide-react'
-import { Board } from '@/types'
+import type { Board } from '@/types'
 import { createBoard, deleteBoard, getBoards, updateBoard } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import {
@@ -37,15 +37,28 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
   const [title, setTitle] = useState('')
   const [saving, setSaving] = useState(false)
 
-  const loadBoards = async () => {
-    setLoading(true)
+  const loadBoards = useCallback(async () => {
     setBoards(await getBoards(userId))
     setLoading(false)
-  }
+  }, [userId])
 
   useEffect(() => {
-    loadBoards()
-  }, [])
+    let cancelled = false
+
+    const fetchBoards = async () => {
+      const nextBoards = await getBoards(userId)
+      if (!cancelled) {
+        setBoards(nextBoards)
+        setLoading(false)
+      }
+    }
+
+    void fetchBoards()
+
+    return () => {
+      cancelled = true
+    }
+  }, [userId])
 
   const openCreateModal = () => {
     setEditingBoard(null)

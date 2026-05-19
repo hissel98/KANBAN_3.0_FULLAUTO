@@ -44,4 +44,20 @@ test.describe('Columns', () => {
     await input.press('Enter')
     await expect(page.locator('h3:has-text("' + newTitle + '")')).toBeVisible({ timeout: 5000 })
   })
+
+  test('should delete a column', async ({ page }) => {
+    const title = `Delete ${Date.now()}`
+    await page.click('text=Add Column')
+    await page.fill('input[placeholder="Column title"]', title)
+    await page.press('input[placeholder="Column title"]', 'Enter')
+    await page.waitForSelector('h3:has-text("' + title + '")', { timeout: 5000 })
+
+    const column = page.locator('h3:has-text("' + title + '")').first()
+    await column.hover()
+
+    page.once('dialog', dialog => dialog.accept())
+    await column.locator('xpath=../..').locator('button').nth(3).click({ force: true })
+
+    await expect(page.locator('h3:has-text("' + title + '")')).not.toBeVisible({ timeout: 5000 })
+  })
 })

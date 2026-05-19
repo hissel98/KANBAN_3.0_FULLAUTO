@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,18 +14,17 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
 
-  const supabase = createClient()
-
   useEffect(() => {
-    checkUser()
-  }, [])
-
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) {
-      window.location.href = '/dashboard'
+    const checkUser = async () => {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        window.location.href = '/dashboard'
+      }
     }
-  }
+
+    void checkUser()
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +32,7 @@ export default function LoginPage() {
     setError(null)
     setMessage(null)
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await createClient().auth.signInWithPassword({
       email,
       password,
     })
@@ -52,7 +51,7 @@ export default function LoginPage() {
     setError(null)
     setMessage(null)
 
-    const { error } = await supabase.auth.signUp({
+    const { error } = await createClient().auth.signUp({
       email,
       password,
     })
@@ -70,7 +69,7 @@ export default function LoginPage() {
     setError(null)
     setMessage(null)
 
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await createClient().auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
