@@ -70,15 +70,10 @@ export default function LoginPage() {
     setError(null)
     setMessage(null)
 
-    // Detect if running in Capacitor app
-    const isCapacitor = typeof window !== 'undefined' && (window as unknown as { Capacitor?: { isNativePlatform?: boolean } }).Capacitor?.isNativePlatform
-
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: isCapacitor
-          ? 'kanban://auth/callback'
-          : `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
 

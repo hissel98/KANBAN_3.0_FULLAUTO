@@ -1,3 +1,10 @@
-// Server actions are not compatible with static export
-// All actions should be handled client-side in the components
-export {}
+'use server'
+
+import { redirect } from 'next/navigation'
+import { createServerSupabaseClient } from '@/lib/server'
+
+export async function signOut() {
+  const supabase = await createServerSupabaseClient()
+  await supabase.auth.signOut()
+  redirect('/login')
+}
