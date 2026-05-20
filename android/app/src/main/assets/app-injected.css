@@ -1,306 +1,166 @@
-:root {
-  color-scheme: light dark;
-}
+/*
+ * Mobile app overlay for the Kanban web app.
+ *
+ * This file intentionally avoids redesigning Tailwind components. It only
+ * adds native-app ergonomics around touch targets, inputs, scrolling, safe
+ * areas, selection, and tap feedback.
+ */
 
 html.app-mode,
 html.app-mode body,
 body.app-mode {
-  min-height: 100%;
-  background: #f5f5f7 !important;
-  color: #1d1d1f !important;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif !important;
-  font-size: 16px !important;
-  line-height: 1.45 !important;
-  letter-spacing: 0 !important;
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-  text-rendering: optimizeLegibility;
+  min-height: 100% !important;
+  -webkit-text-size-adjust: 100% !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-tap-highlight-color: rgba(0, 122, 255, 0.18) !important;
+  overscroll-behavior: none !important;
 }
 
+html.app-mode body,
 body.app-mode {
-  margin: 0;
-  overflow-x: hidden;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  padding-top: env(safe-area-inset-top) !important;
+  padding-right: env(safe-area-inset-right) !important;
+  padding-bottom: env(safe-area-inset-bottom) !important;
+  padding-left: env(safe-area-inset-left) !important;
 }
 
-.app-mode *,
-.app-mode *::before,
-.app-mode *::after {
-  box-sizing: border-box;
+html.app-mode *,
+html.app-mode *::before,
+html.app-mode *::after,
+body.app-mode *,
+body.app-mode *::before,
+body.app-mode *::after {
+  box-sizing: border-box !important;
 }
 
-.app-mode main,
-.app-mode [role="main"],
-.app-mode .page,
-.app-mode .screen,
-.app-mode .container,
-.app-mode .content,
-.app-mode .dashboard,
-.app-mode .board {
-  max-width: 100%;
+html.app-mode body *,
+body.app-mode * {
+  -webkit-overflow-scrolling: touch !important;
 }
 
-.app-mode header,
-.app-mode nav,
-.app-mode .navbar,
-.app-mode .navigation,
-.app-mode .topbar,
-.app-mode .toolbar,
-.app-mode .sidebar {
-  background: rgba(255, 255, 255, 0.86) !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
-  backdrop-filter: saturate(180%) blur(18px);
-  -webkit-backdrop-filter: saturate(180%) blur(18px);
+html.app-mode body,
+html.app-mode body main,
+html.app-mode body [role="main"],
+html.app-mode body [data-slot="card"],
+html.app-mode body .apple-surface,
+html.app-mode body .glass-panel,
+body.app-mode,
+body.app-mode main,
+body.app-mode [role="main"],
+body.app-mode [data-slot="card"],
+body.app-mode .apple-surface,
+body.app-mode .glass-panel {
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
 }
 
-.app-mode button,
-.app-mode [role="button"],
-.app-mode a.button,
-.app-mode .btn,
-.app-mode input[type="button"],
-.app-mode input[type="submit"],
-.app-mode input[type="reset"] {
+html.app-mode body button,
+html.app-mode body [data-slot="button"],
+html.app-mode body [role="button"],
+html.app-mode body a[href],
+html.app-mode body input[type="button"],
+html.app-mode body input[type="submit"],
+html.app-mode body input[type="reset"],
+body.app-mode button,
+body.app-mode [data-slot="button"],
+body.app-mode [role="button"],
+body.app-mode a[href],
+body.app-mode input[type="button"],
+body.app-mode input[type="submit"],
+body.app-mode input[type="reset"] {
   min-height: 48px !important;
   min-width: 48px !important;
-  border-radius: 14px !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  background: #ffffff !important;
-  color: #1d1d1f !important;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
-  font: inherit !important;
-  font-weight: 600 !important;
-  line-height: 1.2 !important;
-  padding: 12px 16px !important;
-  touch-action: manipulation;
-  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease;
+  touch-action: manipulation !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: rgba(0, 122, 255, 0.22) !important;
 }
 
-.app-mode button:active,
-.app-mode [role="button"]:active,
-.app-mode a.button:active,
-.app-mode .btn:active {
-  transform: scale(0.98);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1) !important;
-}
-
-.app-mode button:disabled,
-.app-mode [aria-disabled="true"],
-.app-mode input:disabled,
-.app-mode textarea:disabled,
-.app-mode select:disabled {
-  opacity: 0.48 !important;
-  box-shadow: none !important;
-}
-
-.app-mode input,
-.app-mode textarea,
-.app-mode select {
+html.app-mode body input,
+html.app-mode body textarea,
+html.app-mode body select,
+html.app-mode body [data-slot="input"],
+body.app-mode input,
+body.app-mode textarea,
+body.app-mode select,
+body.app-mode [data-slot="input"] {
   min-height: 48px !important;
-  border-radius: 14px !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  background: rgba(255, 255, 255, 0.92) !important;
-  color: #1d1d1f !important;
-  font: inherit !important;
-  padding: 12px 14px !important;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-  outline: none;
+  font-size: 16px !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: rgba(0, 122, 255, 0.18) !important;
 }
 
-.app-mode textarea {
+html.app-mode body textarea,
+body.app-mode textarea {
   min-height: 96px !important;
-  resize: vertical;
 }
 
-.app-mode input:focus,
-.app-mode textarea:focus,
-.app-mode select:focus,
-.app-mode button:focus-visible,
-.app-mode [role="button"]:focus-visible,
-.app-mode a:focus-visible {
-  border-color: #007aff !important;
-  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.18) !important;
-  outline: none !important;
+html.app-mode body input,
+html.app-mode body textarea,
+html.app-mode body select,
+body.app-mode input,
+body.app-mode textarea,
+body.app-mode select {
+  -webkit-user-select: text !important;
+  user-select: text !important;
 }
 
-.app-mode .card,
-.app-mode [class*="card"],
-.app-mode .panel,
-.app-mode .dialog,
-.app-mode .modal,
-.app-mode .popover,
-.app-mode .dropdown,
-.app-mode .task,
-.app-mode .ticket,
-.app-mode .item {
-  border-radius: 18px !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
-  background: rgba(255, 255, 255, 0.92) !important;
-  color: #1d1d1f !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08) !important;
+html.app-mode body label,
+html.app-mode body [data-slot="label"],
+body.app-mode label,
+body.app-mode [data-slot="label"] {
+  -webkit-tap-highlight-color: rgba(0, 122, 255, 0.14) !important;
 }
 
-.app-mode .column,
-.app-mode [class*="column"],
-.app-mode .lane,
-.app-mode [class*="lane"],
-.app-mode .list,
-.app-mode [class*="list"] {
-  border-radius: 20px !important;
-  background: rgba(255, 255, 255, 0.62) !important;
-  border-color: rgba(0, 0, 0, 0.07) !important;
+html.app-mode body button:hover,
+html.app-mode body [data-slot="button"]:hover,
+html.app-mode body [role="button"]:hover,
+html.app-mode body a[href]:hover,
+html.app-mode body input[type="button"]:hover,
+html.app-mode body input[type="submit"]:hover,
+html.app-mode body input[type="reset"]:hover,
+body.app-mode button:hover,
+body.app-mode [data-slot="button"]:hover,
+body.app-mode [role="button"]:hover,
+body.app-mode a[href]:hover,
+body.app-mode input[type="button"]:hover,
+body.app-mode input[type="submit"]:hover,
+body.app-mode input[type="reset"]:hover {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: inherit !important;
 }
 
-.app-mode h1,
-.app-mode h2,
-.app-mode h3,
-.app-mode h4,
-.app-mode h5,
-.app-mode h6 {
-  color: inherit !important;
-  letter-spacing: 0 !important;
-  line-height: 1.16 !important;
-  text-wrap: balance;
+html.app-mode body button:focus-visible,
+html.app-mode body [data-slot="button"]:focus-visible,
+html.app-mode body [role="button"]:focus-visible,
+html.app-mode body a[href]:focus-visible,
+html.app-mode body input:focus-visible,
+html.app-mode body textarea:focus-visible,
+html.app-mode body select:focus-visible,
+body.app-mode button:focus-visible,
+body.app-mode [data-slot="button"]:focus-visible,
+body.app-mode [role="button"]:focus-visible,
+body.app-mode a[href]:focus-visible,
+body.app-mode input:focus-visible,
+body.app-mode textarea:focus-visible,
+body.app-mode select:focus-visible {
+  outline: 2px solid rgba(0, 122, 255, 0.65) !important;
+  outline-offset: 2px !important;
 }
 
-.app-mode p,
-.app-mode li,
-.app-mode label,
-.app-mode small,
-.app-mode span {
-  letter-spacing: 0 !important;
-}
-
-.app-mode a {
-  color: #007aff !important;
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.18em;
-}
-
-.app-mode table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.app-mode th,
-.app-mode td {
-  padding: 12px !important;
-}
-
-.app-mode ::placeholder {
-  color: rgba(60, 60, 67, 0.55) !important;
-}
-
-@media (max-width: 600px) {
-  html.app-mode,
-  html.app-mode body,
-  body.app-mode {
-    font-size: 17px !important;
+@media (hover: none), (pointer: coarse) {
+  html.app-mode body *,
+  body.app-mode * {
+    transition-property: opacity, background-color, border-color, color !important;
   }
 
-  .app-mode main,
-  .app-mode [role="main"],
-  .app-mode .page,
-  .app-mode .screen,
-  .app-mode .content,
-  .app-mode .dashboard,
-  .app-mode .board {
-    padding-left: max(14px, env(safe-area-inset-left)) !important;
-    padding-right: max(14px, env(safe-area-inset-right)) !important;
-  }
-
-  .app-mode button,
-  .app-mode [role="button"],
-  .app-mode a.button,
-  .app-mode .btn,
-  .app-mode input,
-  .app-mode textarea,
-  .app-mode select {
-    font-size: 16px !important;
-  }
-
-  .app-mode .card,
-  .app-mode [class*="card"],
-  .app-mode .panel,
-  .app-mode .task,
-  .app-mode .ticket,
-  .app-mode .item {
-    border-radius: 16px !important;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  html.app-mode,
-  html.app-mode body,
-  body.app-mode {
-    background: #000000 !important;
-    color: #f5f5f7 !important;
-  }
-
-  .app-mode header,
-  .app-mode nav,
-  .app-mode .navbar,
-  .app-mode .navigation,
-  .app-mode .topbar,
-  .app-mode .toolbar,
-  .app-mode .sidebar {
-    background: rgba(28, 28, 30, 0.86) !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.38) !important;
-  }
-
-  .app-mode button,
-  .app-mode [role="button"],
-  .app-mode a.button,
-  .app-mode .btn,
-  .app-mode input[type="button"],
-  .app-mode input[type="submit"],
-  .app-mode input[type="reset"] {
-    background: #1c1c1e !important;
-    color: #f5f5f7 !important;
-    border-color: rgba(255, 255, 255, 0.14) !important;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34) !important;
-  }
-
-  .app-mode input,
-  .app-mode textarea,
-  .app-mode select {
-    background: rgba(28, 28, 30, 0.94) !important;
-    color: #f5f5f7 !important;
-    border-color: rgba(255, 255, 255, 0.16) !important;
-  }
-
-  .app-mode .card,
-  .app-mode [class*="card"],
-  .app-mode .panel,
-  .app-mode .dialog,
-  .app-mode .modal,
-  .app-mode .popover,
-  .app-mode .dropdown,
-  .app-mode .task,
-  .app-mode .ticket,
-  .app-mode .item {
-    background: rgba(28, 28, 30, 0.94) !important;
-    color: #f5f5f7 !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38) !important;
-  }
-
-  .app-mode .column,
-  .app-mode [class*="column"],
-  .app-mode .lane,
-  .app-mode [class*="lane"],
-  .app-mode .list,
-  .app-mode [class*="list"] {
-    background: rgba(44, 44, 46, 0.72) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-  }
-
-  .app-mode a {
-    color: #0a84ff !important;
-  }
-
-  .app-mode ::placeholder {
-    color: rgba(235, 235, 245, 0.48) !important;
+  html.app-mode body *:hover,
+  body.app-mode *:hover {
+    transform: none !important;
+    filter: none !important;
   }
 }
