@@ -11,6 +11,19 @@
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui"
   },
+  "browserslist": {
+    "production": [
+      "chrome >= 61",
+      "and_chr >= 61",
+      "safari >= 11",
+      "ios_saf >= 11"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
     "@dnd-kit/core": "^6.3.1",
