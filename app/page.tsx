@@ -1,13 +1,24 @@
-import { redirect } from 'next/navigation'
-import { createServerSupabaseClient } from '@/lib/server'
+'use client'
 
-export default async function HomePage() {
-  const supabase = await createServerSupabaseClient()
-  const { data: { session } } = await supabase.auth.getSession()
+import { useEffect } from 'react'
+import { createClient } from '@/lib/supabase'
 
-  if (session) {
-    redirect('/dashboard')
-  }
+export default function HomePage() {
+  useEffect(() => {
+    const redirectToEntry = async () => {
+      const {
+        data: { session },
+      } = await createClient().auth.getSession()
 
-  redirect('/login')
+      window.location.replace(session ? '/dashboard' : '/login')
+    }
+
+    void redirectToEntry()
+  }, [])
+
+  return (
+    <div className="apple-surface flex min-h-screen items-center justify-center font-medium" style={{ color: '#888888' }}>
+      Loading...
+    </div>
+  )
 }

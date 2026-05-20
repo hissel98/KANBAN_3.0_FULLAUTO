@@ -1,16 +1,12 @@
-import { redirect } from 'next/navigation'
-import { createServerSupabaseClient } from '@/lib/server'
+'use client'
+
+import { AuthGate } from '@/components/AuthGate'
 import { BoardDashboard } from '@/components/BoardDashboard'
 
-export default async function DashboardPage() {
-  const supabase = await createServerSupabaseClient()
-  const { data: { session } } = await supabase.auth.getSession()
-
-  if (!session) {
-    redirect('/login')
-  }
-
+export default function DashboardPage() {
   return (
-    <BoardDashboard userId={session.user.id} userEmail={session.user.email ?? ''} />
+    <AuthGate>
+      {(user) => <BoardDashboard userId={user.id} userEmail={user.email} />}
+    </AuthGate>
   )
 }

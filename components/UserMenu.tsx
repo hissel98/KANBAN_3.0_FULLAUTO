@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ChevronDown, LogOut, Settings, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { signOut } from '@/app/actions'
+import { createClient } from '@/lib/supabase'
 
 interface UserMenuProps {
   email: string
@@ -39,7 +39,8 @@ export function UserMenu({ email }: UserMenuProps) {
 
   const handleSignOut = async () => {
     setSigningOut(true)
-    await signOut()
+    await createClient().auth.signOut()
+    window.location.href = '/login'
   }
 
   return (

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { cookies } from "next/headers";
 import { SessionTimeout } from "@/components/SessionTimeout";
 import "./globals.css";
 
@@ -19,19 +18,30 @@ export const metadata: Metadata = {
   description: "Kanban board for project management",
 };
 
-export default async function RootLayout({
+const appModeScript = `
+(() => {
+  const isAndroidQuery = new URLSearchParams(window.location.search).get('app') === 'android';
+  const isNative = typeof window.Capacitor?.isNativePlatform === 'function' && window.Capacitor.isNativePlatform();
+  if (isAndroidQuery || isNative) {
+    document.documentElement.classList.add('app-android');
+  }
+})();
+`;
+
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const isAndroidApp = cookieStore.get("app_mode")?.value === "android";
-
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased${isAndroidApp ? " app-android" : ""}`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: appModeScript }} />
+      </head>
       <body className="min-h-full flex flex-col">
         <SessionTimeout />
         {children}
