@@ -9,7 +9,7 @@ const config: ExtendedCapacitorConfig = {
   appName: 'Kanban Board',
   webDir: '.next/standalone',
   server: {
-    url: 'https://www.dasistmeinetest.space/',
+    url: 'https://www.dasistmeinetest.space/?app=android',
   },
   plugins: {
     DeepLinks: {

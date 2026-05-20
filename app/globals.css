@@ -187,19 +187,27 @@
     --input: rgb(17 24 39 / 0.14);
     --ring: #007aff;
     --radius: 1rem;
-    background: var(--background);
-    color: var(--foreground);
-    color-scheme: light;
-    min-height: 100%;
+    background:
+      radial-gradient(circle at 18% -10%, rgb(0 122 255 / 0.36), transparent 18rem),
+      radial-gradient(circle at 90% 0%, rgb(255 204 0 / 0.34), transparent 17rem),
+      linear-gradient(165deg, #f8fbff 0%, #eaf4ff 45%, #f8ecff 100%) !important;
+    color: var(--foreground) !important;
+    color-scheme: light !important;
+    min-height: 100% !important;
+    overscroll-behavior: none !important;
     -webkit-tap-highlight-color: transparent;
     text-rendering: optimizeLegibility;
   }
 
   html.app-android body {
-    min-height: 100dvh;
+    min-height: 100dvh !important;
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.92) 0%, rgb(246 247 251 / 0.98) 42%, #eef2f8 100%);
-    overscroll-behavior-y: none;
+      radial-gradient(circle at 18% 0%, rgb(0 122 255 / 0.25), transparent 19rem),
+      radial-gradient(circle at 86% 12%, rgb(255 45 85 / 0.16), transparent 18rem),
+      linear-gradient(165deg, #f8fbff 0%, #eaf4ff 48%, #fff2d7 100%) !important;
+    color: #0f172a !important;
+    overscroll-behavior: none !important;
+    overflow-x: hidden !important;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -208,65 +216,140 @@
   html.app-android input,
   html.app-android textarea,
   html.app-android select {
-    touch-action: manipulation;
+    touch-action: manipulation !important;
   }
 }
 
 @layer components {
+  html.app-android .apple-surface,
+  html.app-android body .apple-surface {
+    background:
+      radial-gradient(circle at 12% 0%, rgb(0 122 255 / 0.36), transparent 20rem),
+      radial-gradient(circle at 88% 8%, rgb(255 204 0 / 0.32), transparent 18rem),
+      radial-gradient(circle at 50% 100%, rgb(52 199 89 / 0.2), transparent 16rem),
+      linear-gradient(155deg, #f8fbff 0%, #e8f4ff 44%, #fff3d9 100%) !important;
+    overscroll-behavior: none !important;
+  }
+
   html.app-android :is(header, nav, aside) {
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   }
 
   html.app-android :is(.bg-card, [class*="bg-card"]) {
-    background-color: rgb(255 255 255 / 0.86);
+    background-color: rgb(255 255 255 / 0.74) !important;
   }
 
   html.app-android :is(.border, [class*="border-border"]) {
-    border-color: rgb(17 24 39 / 0.09);
+    border-color: rgb(255 255 255 / 0.78) !important;
   }
 
   html.app-android :is(.shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl) {
-    box-shadow: 0 18px 45px rgb(15 23 42 / 0.1);
+    box-shadow: 0 22px 56px rgb(15 23 42 / 0.16) !important;
   }
 
   html.app-android :is(button, [role="button"], input, textarea, select, [data-slot="card"]) {
-    border-radius: 16px;
+    border-radius: 20px !important;
   }
 
   html.app-android button {
-    min-height: 44px;
-    font-weight: 600;
+    min-height: 52px !important;
+    border-radius: 999px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    box-shadow: 0 10px 24px rgb(0 122 255 / 0.2) !important;
+    transition: none !important;
+    transform: none !important;
+  }
+
+  html.app-android button:hover,
+  html.app-android button:active,
+  html.app-android button:focus {
+    transform: none !important;
+    box-shadow: 0 10px 24px rgb(0 122 255 / 0.2) !important;
   }
 
   html.app-android input,
   html.app-android textarea,
   html.app-android select {
-    min-height: 44px;
-    background-color: rgb(255 255 255 / 0.88);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.75);
+    min-height: 52px !important;
+    background-color: rgb(255 255 255 / 0.9) !important;
+    border-color: rgb(255 255 255 / 0.82) !important;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.85), 0 8px 20px rgb(15 23 42 / 0.08) !important;
   }
 
   html.app-android :is(.glass-panel, .tactile-card, [data-slot="card"]) {
-    background: rgb(255 255 255 / 0.82);
-    border: 1px solid rgb(255 255 255 / 0.72);
-    box-shadow: 0 18px 45px rgb(15 23 42 / 0.1);
-    backdrop-filter: blur(22px) saturate(165%);
-    -webkit-backdrop-filter: blur(22px) saturate(165%);
+    background: linear-gradient(155deg, rgb(255 255 255 / 0.82), rgb(255 255 255 / 0.58)) !important;
+    border: 1px solid rgb(255 255 255 / 0.86) !important;
+    border-radius: 28px !important;
+    box-shadow: 0 28px 80px rgb(15 23 42 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.92) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  }
+
+  html.app-android .tactile-card:hover,
+  html.app-android .glass-panel:hover,
+  html.app-android [data-slot="card"]:hover {
+    transform: none !important;
+    box-shadow: 0 28px 80px rgb(15 23 42 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.92) !important;
+  }
+
+  html.app-android body .apple-surface [style*="color: '#032147'"],
+  html.app-android body .apple-surface [style*='color: "#032147"'],
+  html.app-android body .apple-surface [style*='color: #032147'],
+  html.app-android body .apple-surface [style*="color:#032147"] {
+    color: #0b1220 !important;
+  }
+
+  html.app-android body .apple-surface [style*="color: '#888888'"],
+  html.app-android body .apple-surface [style*='color: "#888888"'],
+  html.app-android body .apple-surface [style*='color: #888888'],
+  html.app-android body .apple-surface [style*="color:#888888"] {
+    color: #475569 !important;
+  }
+
+  html.app-android body .apple-surface :is([data-slot="card-title"], [data-slot="label"]) {
+    color: #0b1220 !important;
+  }
+
+  html.app-android body .apple-surface [data-slot="card-description"] {
+    color: #475569 !important;
+  }
+
+  html.app-android body .apple-surface [data-slot="button"][style],
+  html.app-android body .apple-surface [data-slot="button"] {
+    border-color: rgb(255 255 255 / 0.88) !important;
+    color: #ffffff !important;
+    background: linear-gradient(180deg, #3aa0ff 0%, #007aff 100%) !important;
+  }
+
+  html.app-android body .apple-surface [data-slot="button"][style]:first-of-type,
+  html.app-android body .apple-surface [data-slot="button"]:first-of-type {
+    color: #0f172a !important;
+    background: rgb(255 255 255 / 0.92) !important;
+  }
+
+  html.app-android body .apple-surface [data-slot="button"][style]:last-of-type,
+  html.app-android body .apple-surface [data-slot="button"]:last-of-type {
+    color: #ffffff !important;
+    background: linear-gradient(180deg, #af52de 0%, #7f2bb8 100%) !important;
   }
 }
 
 @layer utilities {
   html.app-android .apple-surface {
     background:
-      linear-gradient(180deg, #ffffff 0%, #f6f7fb 48%, #edf1f7 100%);
+      radial-gradient(circle at 12% 0%, rgb(0 122 255 / 0.36), transparent 20rem),
+      radial-gradient(circle at 88% 8%, rgb(255 204 0 / 0.32), transparent 18rem),
+      radial-gradient(circle at 50% 100%, rgb(52 199 89 / 0.2), transparent 16rem),
+      linear-gradient(155deg, #f8fbff 0%, #e8f4ff 44%, #fff3d9 100%) !important;
   }
 
   html.app-android .safe-mobile-padding {
-    padding-top: max(1rem, env(safe-area-inset-top));
-    padding-right: max(1rem, env(safe-area-inset-right));
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
-    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-top: max(1rem, env(safe-area-inset-top)) !important;
+    padding-right: max(1rem, env(safe-area-inset-right)) !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    padding-left: max(1rem, env(safe-area-inset-left)) !important;
   }
 }
 

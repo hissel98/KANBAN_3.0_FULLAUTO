@@ -7,6 +7,21 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
+declare global {
+  interface Window {
+    Capacitor?: {
+      isNativePlatform?: () => boolean
+    }
+  }
+}
+
+const APP_AUTH_CALLBACK_URL = 'com.dasistmeinetest.kanban://auth/callback'
+
+const isCapacitorNative = () =>
+  typeof window !== 'undefined' &&
+  typeof window.Capacitor?.isNativePlatform === 'function' &&
+  window.Capacitor.isNativePlatform()
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -15,6 +30,8 @@ export default function LoginPage() {
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
+    let removeAppUrlListener: (() => void) | undefined
+
     const checkUser = async () => {
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
@@ -23,7 +40,69 @@ export default function LoginPage() {
       }
     }
 
+    const setupDeepLinkHandler = async () => {
+      if (!isCapacitorNative()) {
+        return
+      }
+
+      const [{ App }, { Browser }] = await Promise.all([
+        import('@capacitor/app'),
+        import('@capacitor/browser'),
+      ])
+
+      const listener = await App.addListener('appUrlOpen', async ({ url }) => {
+        let callbackUrl: URL
+
+        try {
+          callbackUrl = new URL(url)
+        } catch {
+          return
+        }
+
+        const isNativeAuthCallback =
+          callbackUrl.protocol === 'com.dasistmeinetest.kanban:' &&
+          callbackUrl.host === 'auth' &&
+          callbackUrl.pathname.startsWith('/callback')
+        const isWebAuthCallback =
+          callbackUrl.host === window.location.host &&
+          callbackUrl.pathname.startsWith('/auth/callback')
+
+        if (!isNativeAuthCallback && !isWebAuthCallback) {
+          return
+        }
+
+        const code = callbackUrl.searchParams.get('code')
+
+        if (!code) {
+          await Browser.close()
+          setError('Google sign-in callback did not include an auth code.')
+          setLoading(false)
+          return
+        }
+
+        const { error } = await createClient().auth.exchangeCodeForSession(code)
+        await Browser.close()
+
+        if (error) {
+          setError(error.message)
+          setLoading(false)
+          return
+        }
+
+        window.location.href = '/dashboard'
+      })
+
+      removeAppUrlListener = () => {
+        void listener.remove()
+      }
+    }
+
     void checkUser()
+    void setupDeepLinkHandler()
+
+    return () => {
+      removeAppUrlListener?.()
+    }
   }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -68,6 +147,35 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
     setMessage(null)
+
+    if (isCapacitorNative()) {
+      const [{ Browser }] = await Promise.all([
+        import('@capacitor/browser'),
+      ])
+
+      const { data, error } = await createClient().auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: APP_AUTH_CALLBACK_URL,
+          skipBrowserRedirect: true,
+        },
+      })
+
+      if (error) {
+        setError(error.message)
+        setLoading(false)
+        return
+      }
+
+      if (!data.url) {
+        setError('Google sign-in URL could not be created.')
+        setLoading(false)
+        return
+      }
+
+      await Browser.open({ url: data.url })
+      return
+    }
 
     const { error } = await createClient().auth.signInWithOAuth({
       provider: 'google',
