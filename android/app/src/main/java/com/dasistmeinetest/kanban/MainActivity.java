@@ -1,48 +1,34 @@
 package com.dasistmeinetest.kanban;
 
-import android.net.Uri;
+import android.util.Base64;
 import android.util.Log;
 import android.webkit.WebView;
-import androidx.webkit.WebViewCompat;
-import androidx.webkit.WebViewFeature;
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.WebViewListener;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import org.json.JSONObject;
 
 public class MainActivity extends BridgeActivity {
     private static final String TAG = "MainActivity";
-    private static final String INJECTED_STYLE_ID = "capacitor-app-injected-css";
+    private static final String CSS_ASSET = "app-injected.css";
+    private static final String CSS_LINK_ID = "capacitor-app-injected-css";
 
     @Override
     protected void load() {
-        WebView webView = findViewById(com.getcapacitor.android.R.id.webview);
-        installDocumentStartInjection(webView);
-
         bridgeBuilder.addWebViewListener(
             new WebViewListener() {
                 @Override
                 public void onPageLoaded(WebView webView) {
-                    injectAppCss(webView);
-                }
-
-                @Override
-                public void onPageCommitVisible(WebView webView, String url) {
-                    injectAppCss(webView);
+                    injectCss(webView);
                 }
             }
         );
 
         super.load();
-
-        injectAppCss(bridge.getWebView());
     }
 
-    private void injectAppCss(WebView webView) {
+    private void injectCss(WebView webView) {
         if (webView == null) {
             return;
         }
@@ -50,67 +36,34 @@ public class MainActivity extends BridgeActivity {
         try {
             webView.evaluateJavascript(buildInjectionScript(), result -> Log.d(TAG, "CSS injection result: " + result));
         } catch (IOException e) {
-            Log.w(TAG, "Unable to read injected CSS asset", e);
+            Log.w(TAG, "Unable to read CSS asset", e);
         }
-    }
-
-    private void installDocumentStartInjection(WebView webView) {
-        if (webView == null) {
-            Log.w(TAG, "Unable to install document-start CSS injection; WebView is not available");
-            return;
-        }
-
-        if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
-            Log.d(TAG, "DOCUMENT_START_SCRIPT is not supported; using page lifecycle fallback");
-            return;
-        }
-
-        try {
-            String origin = getConfiguredServerOrigin();
-            WebViewCompat.addDocumentStartJavaScript(webView, buildInjectionScript(), Collections.singleton(origin));
-            Log.d(TAG, "Installed document-start CSS injection for " + origin);
-        } catch (Exception e) {
-            Log.w(TAG, "Unable to install document-start CSS injection", e);
-        }
-    }
-
-    private String getConfiguredServerOrigin() throws Exception {
-        JSONObject config = new JSONObject(readAsset("capacitor.config.json"));
-        String serverUrl = config.getJSONObject("server").getString("url");
-        Uri serverUri = Uri.parse(serverUrl);
-        return serverUri.getScheme() + "://" + serverUri.getAuthority();
     }
 
     private String buildInjectionScript() throws IOException {
-        String css = readAsset("app-injected.css");
-        String cssLiteral = JSONObject.quote(css);
-        String idLiteral = JSONObject.quote(INJECTED_STYLE_ID);
+        String cssDataUri = "data:text/css;base64," + Base64.encodeToString(readAssetBytes(CSS_ASSET), Base64.NO_WRAP);
 
         return "(function(){"
-            + "var css=" + cssLiteral + ";"
-            + "var id=" + idLiteral + ";"
-            + "function apply(){"
-            + "try{"
-            + "var root=document.documentElement;"
-            + "if(root){root.classList.add('app-mode');}"
+            + "var id='" + CSS_LINK_ID + "';"
+            + "var href='" + cssDataUri + "';"
+            + "document.documentElement.classList.add('app-mode');"
             + "if(document.body){document.body.classList.add('app-mode');}"
             + "var parent=document.head||document.documentElement;"
-            + "if(!parent){return false;}"
-            + "var style=document.getElementById(id);"
-            + "if(!style){style=document.createElement('style');style.id=id;style.type='text/css';parent.appendChild(style);}"
-            + "if(style.textContent!==css){style.textContent=css;}"
-            + "return !!(root&&document.getElementById(id));"
-            + "}catch(e){return false;}"
+            + "if(!parent){return 'no-parent';}"
+            + "var link=document.getElementById(id);"
+            + "if(!link){"
+            + "link=document.createElement('link');"
+            + "link.id=id;"
+            + "link.rel='stylesheet';"
+            + "link.type='text/css';"
+            + "parent.appendChild(link);"
             + "}"
-            + "if(apply()){return 'injected';}"
-            + "var tries=0;"
-            + "var timer=setInterval(function(){tries++;if(apply()||tries>60){clearInterval(timer);}},50);"
-            + "document.addEventListener('DOMContentLoaded',apply,{once:true});"
-            + "return 'scheduled';"
+            + "if(link.href!==href){link.href=href;}"
+            + "return 'injected';"
             + "})();";
     }
 
-    private String readAsset(String fileName) throws IOException {
+    private byte[] readAssetBytes(String fileName) throws IOException {
         try (InputStream inputStream = getAssets().open(fileName); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[4096];
             int bytesRead;
@@ -119,7 +72,7 @@ public class MainActivity extends BridgeActivity {
                 outputStream.write(buffer, 0, bytesRead);
             }
 
-            return outputStream.toString(StandardCharsets.UTF_8.name());
+            return outputStream.toByteArray();
         }
     }
 }
