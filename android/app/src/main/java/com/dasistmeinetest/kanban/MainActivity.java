@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import org.json.JSONObject;
 
 public class MainActivity extends BridgeActivity {
 
@@ -16,7 +17,7 @@ public class MainActivity extends BridgeActivity {
             new WebViewListener() {
                 @Override
                 public void onPageLoaded(WebView webView) {
-                    injectAppBridge(webView);
+                    injectAppCss(webView);
                 }
             }
         );
@@ -24,9 +25,14 @@ public class MainActivity extends BridgeActivity {
         super.load();
     }
 
-    private void injectAppBridge(WebView webView) {
+    private void injectAppCss(WebView webView) {
         try {
-            webView.evaluateJavascript(readAsset("app-bridge.js"), null);
+            String css = readAsset("app-injected.css");
+            String js = "var s=document.createElement('style');s.textContent="
+                + JSONObject.quote(css)
+                + ";document.head.appendChild(s);document.documentElement.classList.add('app-mode');document.body&&document.body.classList.add('app-mode');";
+
+            webView.evaluateJavascript(js, null);
         } catch (IOException ignored) {
             // The app can still run without the optional overlay.
         }
