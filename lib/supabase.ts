@@ -1,6 +1,7 @@
 'use client'
 
-import { createClient as createSupabaseClient, type SupabaseClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { Board, Column, Card } from '@/types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -14,12 +15,11 @@ export const createClient = () => {
   }
 
   if (!supabaseClient) {
-    supabaseClient = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+    supabaseClient = createBrowserClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         autoRefreshToken: true,
         detectSessionInUrl: true,
         persistSession: true,
-        flowType: 'pkce',
       },
     })
   }
