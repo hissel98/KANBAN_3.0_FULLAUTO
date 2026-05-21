@@ -354,7 +354,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
             This board does not exist or you do not have access to it.
           </p>
           <Link
-            href="/dashboard"
+            href="/dashboard/"
             className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl px-3 text-sm font-semibold text-white"
             style={{ backgroundColor: '#753991' }}
           >
@@ -374,7 +374,7 @@ export function KanbanBoard({ userId, userEmail, boardId }: KanbanBoardProps) {
           </h1>
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
             <Link
-              href="/dashboard"
+              href="/dashboard/"
               className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-white/85 px-3 text-sm font-semibold shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#209dd7]/50 hover:bg-white hover:shadow-md sm:h-10"
               style={{ color: '#032147' }}
             >

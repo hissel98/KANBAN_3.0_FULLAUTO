@@ -1,9 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 
 export default function AuthCallbackPage() {
+  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -11,7 +13,7 @@ export default function AuthCallbackPage() {
       const code = new URLSearchParams(window.location.search).get('code')
 
       if (!code) {
-        window.location.replace('/login')
+        router.replace('/login/')
         return
       }
 
@@ -22,11 +24,11 @@ export default function AuthCallbackPage() {
         return
       }
 
-      window.location.replace('/dashboard')
+      router.replace('/dashboard/')
     }
 
     void completeSignIn()
-  }, [])
+  }, [router])
 
   return (
     <div className="apple-surface flex min-h-screen items-center justify-center px-4">

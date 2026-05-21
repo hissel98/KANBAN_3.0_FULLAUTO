@@ -89,7 +89,7 @@ export function AccountSettings({ email, displayName }: AccountSettingsProps) {
           </div>
           <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:items-center">
             <Link
-              href="/dashboard"
+              href="/dashboard/"
               className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-white/85 px-3 text-sm font-semibold shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#209dd7]/50 hover:bg-white hover:shadow-md"
               style={{ color: '#032147' }}
             >

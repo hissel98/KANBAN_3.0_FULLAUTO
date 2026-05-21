@@ -1,13 +1,30 @@
 'use client'
 
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient, type SupabaseClient } from '@supabase/supabase-js'
 import { Board, Column, Card } from '@/types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
+let supabaseClient: SupabaseClient | null = null
+
 export const createClient = () => {
-  return createBrowserClient(supabaseUrl, supabaseAnonKey)
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase browser environment variables.')
+  }
+
+  if (!supabaseClient) {
+    supabaseClient = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        persistSession: true,
+        flowType: 'pkce',
+      },
+    })
+  }
+
+  return supabaseClient
 }
 
 export async function getBoard(userId: string): Promise<Board | null> {

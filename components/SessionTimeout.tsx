@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 
 const DEFAULT_SESSION_TIMEOUT_MINUTES = 30
@@ -22,11 +22,14 @@ function getSessionTimeoutMs() {
 export const SESSION_TIMEOUT_MS = getSessionTimeoutMs()
 
 function isPublicAuthPath(pathname: string | null) {
-  return PUBLIC_AUTH_PATHS.some((path) => pathname === path || pathname?.startsWith(`${path}/`))
+  const normalizedPathname = pathname?.replace(/\/$/, '') || null
+
+  return PUBLIC_AUTH_PATHS.some((path) => normalizedPathname === path || normalizedPathname?.startsWith(`${path}/`))
 }
 
 export function useSessionTimeout(timeoutMs = SESSION_TIMEOUT_MS) {
   const pathname = usePathname()
+  const router = useRouter()
   const supabase = useMemo(() => createClient(), [])
   const timeoutRef = useRef<number | null>(null)
 
@@ -50,10 +53,10 @@ export function useSessionTimeout(timeoutMs = SESSION_TIMEOUT_MS) {
 
     await supabase.auth.signOut()
 
-    if (window.location.pathname !== '/login') {
-      window.location.href = '/login'
+    if (window.location.pathname.replace(/\/$/, '') !== '/login') {
+      router.replace('/login/')
     }
-  }, [clearSessionTimer, supabase])
+  }, [clearSessionTimer, router, supabase])
 
   const resetSessionTimer = useCallback(() => {
     clearSessionTimer()

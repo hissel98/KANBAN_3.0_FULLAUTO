@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AuthDeepLinkHandler } from "@/components/AuthDeepLinkHandler";
 import { SessionTimeout } from "@/components/SessionTimeout";
 import "./globals.css";
 
@@ -43,6 +44,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: appModeScript }} />
       </head>
       <body className="min-h-full flex flex-col">
+        <AuthDeepLinkHandler />
         <SessionTimeout />
         {children}
       </body>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { ChevronDown, LogOut, Settings, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase'
@@ -11,6 +12,7 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ email }: UserMenuProps) {
+  const router = useRouter()
   const menuRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
@@ -40,7 +42,7 @@ export function UserMenu({ email }: UserMenuProps) {
   const handleSignOut = async () => {
     setSigningOut(true)
     await createClient().auth.signOut()
-    window.location.href = '/login'
+    router.replace('/login/')
   }
 
   return (
@@ -73,7 +75,7 @@ export function UserMenu({ email }: UserMenuProps) {
             </p>
           </div>
           <Link
-            href="/settings"
+            href="/settings/"
             role="menuitem"
             className="mt-1 flex min-h-11 w-full items-center gap-2 px-3 py-2 text-left font-medium hover:bg-muted"
             style={{ color: '#032147' }}

@@ -151,7 +151,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
               <Card key={board.id} className="tactile-card border-white/75 bg-white/90 ring-white/80">
                 <CardHeader>
                   <CardTitle className="pr-2 text-lg" style={{ color: '#032147' }}>
-                    <Link className="hover:underline" href={`/board?id=${board.id}`}>
+                    <Link className="hover:underline" href={`/board/?id=${board.id}`}>
                       {board.title}
                     </Link>
                   </CardTitle>
@@ -182,7 +182,7 @@ export function BoardDashboard({ userId, userEmail }: BoardDashboardProps) {
                 </CardHeader>
                 <CardContent>
                   <Link
-                    href={`/board?id=${board.id}`}
+                    href={`/board/?id=${board.id}`}
                     className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-border bg-white/85 px-3 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-[#209dd7]/50 hover:bg-white hover:shadow-md sm:h-10"
                     style={{ color: '#032147' }}
                   >

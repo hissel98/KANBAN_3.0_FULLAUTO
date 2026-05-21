@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,13 +17,34 @@ declare global {
 }
 
 const APP_AUTH_CALLBACK_URL = 'com.dasistmeinetest.kanban://auth/callback'
+const AUTH_TIMEOUT_MS = 20000
 
 const isCapacitorNative = () =>
   typeof window !== 'undefined' &&
   typeof window.Capacitor?.isNativePlatform === 'function' &&
   window.Capacitor.isNativePlatform()
 
+async function withAuthTimeout<T>(promise: Promise<T>, action: string) {
+  let timeoutId: number | undefined
+
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timeoutId = window.setTimeout(() => {
+          reject(new Error(`${action} timed out. Check your internet connection and Supabase auth settings.`))
+        }, AUTH_TIMEOUT_MS)
+      }),
+    ])
+  } finally {
+    if (timeoutId) {
+      window.clearTimeout(timeoutId)
+    }
+  }
+}
+
 export default function LoginPage() {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -30,117 +52,81 @@ export default function LoginPage() {
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    let removeAppUrlListener: (() => void) | undefined
-
     const checkUser = async () => {
-      const supabase = createClient()
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        window.location.href = '/dashboard'
-      }
-    }
-
-    const setupDeepLinkHandler = async () => {
-      if (!isCapacitorNative()) {
-        return
-      }
-
-      const [{ App }, { Browser }] = await Promise.all([
-        import('@capacitor/app'),
-        import('@capacitor/browser'),
-      ])
-
-      const listener = await App.addListener('appUrlOpen', async ({ url }) => {
-        let callbackUrl: URL
-
-        try {
-          callbackUrl = new URL(url)
-        } catch {
-          return
+      try {
+        const supabase = createClient()
+        const { data: { session } } = await withAuthTimeout(supabase.auth.getSession(), 'Checking the current session')
+        if (session) {
+          router.replace('/dashboard/')
         }
-
-        const isNativeAuthCallback =
-          callbackUrl.protocol === 'com.dasistmeinetest.kanban:' &&
-          callbackUrl.host === 'auth' &&
-          callbackUrl.pathname.startsWith('/callback')
-        const isWebAuthCallback =
-          callbackUrl.host === window.location.host &&
-          callbackUrl.pathname.startsWith('/auth/callback')
-
-        if (!isNativeAuthCallback && !isWebAuthCallback) {
-          return
-        }
-
-        const code = callbackUrl.searchParams.get('code')
-
-        if (!code) {
-          await Browser.close()
-          setError('Google sign-in callback did not include an auth code.')
-          setLoading(false)
-          return
-        }
-
-        const { error } = await createClient().auth.exchangeCodeForSession(code)
-        await Browser.close()
-
-        if (error) {
-          setError(error.message)
-          setLoading(false)
-          return
-        }
-
-        window.location.href = '/dashboard'
-      })
-
-      removeAppUrlListener = () => {
-        void listener.remove()
+      } catch (error) {
+        console.error('Unable to check auth session:', error)
       }
     }
 
     void checkUser()
-    void setupDeepLinkHandler()
 
-    return () => {
-      removeAppUrlListener?.()
+    const authError = new URLSearchParams(window.location.search).get('authError')
+
+    if (authError) {
+      setError(authError)
+      window.history.replaceState(null, '', '/login/')
     }
-  }, [])
+  }, [router])
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
     setMessage(null)
 
-    const { error } = await createClient().auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      const { error } = await withAuthTimeout(
+        createClient().auth.signInWithPassword({
+          email,
+          password,
+        }),
+        'Signing in'
+      )
 
-    if (error) {
-      setError(error.message)
-    } else {
-      window.location.href = '/dashboard'
+      if (error) {
+        setError(error.message)
+        return
+      }
+
+      router.replace('/dashboard/')
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Sign-in failed.')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSignUp = async () => {
     setLoading(true)
     setError(null)
     setMessage(null)
 
-    const { error } = await createClient().auth.signUp({
-      email,
-      password,
-    })
+    try {
+      const { error } = await withAuthTimeout(
+        createClient().auth.signUp({
+          email,
+          password,
+        }),
+        'Signing up'
+      )
 
-    if (error) {
-      setError(error.message)
-    } else {
+      if (error) {
+        setError(error.message)
+        return
+      }
+
       setMessage('Check your email for the confirmation link.')
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Sign-up failed.')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const handleGoogleSignIn = async () => {
@@ -148,44 +134,58 @@ export default function LoginPage() {
     setError(null)
     setMessage(null)
 
-    if (isCapacitorNative()) {
-      const [{ Browser }] = await Promise.all([
-        import('@capacitor/browser'),
-      ])
+    try {
+      if (isCapacitorNative()) {
+        const [{ Browser }] = await Promise.all([
+          import('@capacitor/browser'),
+        ])
 
-      const { data, error } = await createClient().auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: APP_AUTH_CALLBACK_URL,
-          skipBrowserRedirect: true,
-        },
-      })
+        const { data, error } = await withAuthTimeout(
+          createClient().auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: APP_AUTH_CALLBACK_URL,
+              skipBrowserRedirect: true,
+            },
+          }),
+          'Starting Google sign-in'
+        )
+
+        if (error) {
+          setError(error.message)
+          setLoading(false)
+          return
+        }
+
+        if (!data.url) {
+          setError('Google sign-in URL could not be created.')
+          setLoading(false)
+          return
+        }
+
+        setLoading(false)
+        void Browser.open({ url: data.url }).catch((error) => {
+          setError(error instanceof Error ? error.message : 'Google sign-in could not be opened.')
+        })
+        return
+      }
+
+      const { error } = await withAuthTimeout(
+        createClient().auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback/`,
+          },
+        }),
+        'Starting Google sign-in'
+      )
 
       if (error) {
         setError(error.message)
         setLoading(false)
-        return
       }
-
-      if (!data.url) {
-        setError('Google sign-in URL could not be created.')
-        setLoading(false)
-        return
-      }
-
-      await Browser.open({ url: data.url })
-      return
-    }
-
-    const { error } = await createClient().auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
-
-    if (error) {
-      setError(error.message)
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Google sign-in failed.')
       setLoading(false)
     }
   }
@@ -203,7 +203,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="px-6 pb-6">
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleLogin}>
             <div className="space-y-2">
               <Label htmlFor="email" style={{ color: '#032147' }}>
                 Email
@@ -257,8 +257,7 @@ export default function LoginPage() {
                 Sign in with Google
               </Button>
               <Button
-                type="button"
-                onClick={handleLogin}
+                type="submit"
                 disabled={loading}
                 className="h-12 w-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md"
                 style={{ backgroundColor: '#209dd7' }}
